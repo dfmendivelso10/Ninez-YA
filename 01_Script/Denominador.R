@@ -8,6 +8,9 @@ library(readxl)
 ## Importamos el Data Set del Censo. *Nota: Siempre ajustar el archivo .xlsx antes de importarlo
 ## y pegar los valores sin formato en otra hoja de cáculo. 
 
+## Pueden ajustar su working directory, por mi parte lo hago de esta manera para tener el REPO en GIT
+
+
 CENSO_2005_2019 <- read_excel("/Users/df.mendivelso10/Documents/GitHub/Ninez-YA/02_RAW-Data/CENSO_2005_2019.xlsx")
 
 ## Censo 2005 -2019 Con Proyecciones de Poblacion por Edad y Sexo, Tomamos el Total
@@ -27,7 +30,7 @@ CENSO_2005_2019 <- CENSO_2005_2019  %>%
 censo_filtrado <- CENSO_2005_2019  %>% 
   select(-(Hombres_0:`Mujeres_85 y más`))
 
-## Borrams las variables total hombres, total mujeres, y total general porque solo nos interesa la población
+## Borramos las variables total hombres, total mujeres, y total general porque solo nos interesa la población
 ## de 0 a 17 años.
 
 censo_filtrado <- censo_filtrado   %>% 
@@ -36,15 +39,16 @@ censo_filtrado <- censo_filtrado   %>%
 ## Vamos a crear una Nueva Variable llamada Menores, esta variable suma la población de 0 a 17 años
 
 censo_filtrado <- censo_filtrado   %>% 
-  mutate(menores = rowSums(censo_filtrado[ , c(4:21)]))
+  mutate(menores = rowSums(censo_filtrado[ , c(7:24)]))
 
-## Obtenemos el Denomimandor base
-poblacion_menores <-censo_filtrado %>% select(-(3:89))
+## Obtenemos el Denomimandor base de Menores de Edad
+
+poblacion_menores <-censo_filtrado %>% select(4,5,93)
 
 ## Exportamos
 
-setwd("/Users/df.mendivelso10/Desktop/IMAGINA")
-write.xlsx(poblacion_menores,"/Users/df.mendivelso10/Desktop/IMAGINA/censo_denominador.xlsx", col_names = TRUE)
+
+write.xlsx(poblacion_menores,"/Users/df.mendivelso10/Documents/GitHub/Ninez-YA/03_Process/poblacion_total_2005-2009.xlsx", col_names = TRUE)
 
 
 ##### Vamos a construir la siguiente serie del Censo 2020 en adelante.
