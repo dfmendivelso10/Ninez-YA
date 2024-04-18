@@ -1,7 +1,6 @@
 
 ## Librerías 
 
-
 library(dplyr)
 library(openxlsx)
 library(readxl)
@@ -9,17 +8,18 @@ library(readxl)
 ## Importamos el Data Set del Censo. *Nota: Siempre ajustar el archivo .xlsx antes de importarlo
 ## y pegar los valores sin formato en otra hoja de cáculo. 
 
-CENSO_2005_2019 <- read_excel("~/Downloads/CENSO_2005_2019.xlsx")
+CENSO_2005_2019 <- read_excel("/Users/df.mendivelso10/Documents/GitHub/Ninez-YA/02_RAW-Data/CENSO_2005_2019.xlsx")
 
 ## Censo 2005 -2019 Con Proyecciones de Poblacion por Edad y Sexo, Tomamos el Total
-## Urbano y Rural
+## descartamos Urbano y Rural
 
-## Ahora vamos a Construir el Denominador
-
-## Filtramos la Poblacion Total elimando las observaciones que solo tienen rural o urbano
+## Filtramos la Poblacion Total eliminando las observaciones que solo tienen rural o urbano,
+#tener en cuenta que esta variable puede cambiar de nombre, depende del archivo .xlsx del 
+# DANE
 
 CENSO_2005_2019 <- CENSO_2005_2019  %>% 
-  filter(area_geografica == "Total")
+  filter(`ÁREA GEOGRÁFICA` == "Total")
+
 
 ## Eliminamos las Variables que solo tienen información sobre la población de hombres y mujeres
 ## Recordemos que este DATA Set tiene un alto nivel de desagregación, nos quedamos con el valor total.
