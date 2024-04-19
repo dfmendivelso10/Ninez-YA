@@ -91,12 +91,10 @@ censo_completo_menores <- rbind(poblacion_menores_2019,poblacion_menores_2020)
 
 censo_completo <- censo_completo %>% filter(anno >= 2005 & anno <= 2023)
 
-## Filtramos las demás variables restantes.
-
-censo_completo <- censo_completo  %>% select(`codmpio`, `anno`, `menores`)
-
+## Exportamos
 
 write_xlsx(df,"/Users/df.mendivelso10/Desktop/IMAGINA/VF_YA8.8.4xlsx", col_names = TRUE)
 
 getwd()
+
 
