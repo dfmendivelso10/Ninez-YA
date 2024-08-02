@@ -11,41 +11,58 @@ library(readxl)
 ## Pueden ajustar su working directory, por mi parte lo hago de esta manera para tener el REPO en GIT
 ## Importamos la Data
 
-CENSO_2005_2019 <- read_excel("/Users/df.mendivelso10/Documents/GitHub/Ninez-YA/02_RAW-Data/CENSO_2005_2019.xlsx")
+CENSO_2005_2019 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/CENSO_2005_2019.xlsx")
 
-CENSO_2020_2030 <- read_excel("/Users/df.mendivelso10/Documents/GitHub/Ninez-YA/02_RAW-Data/CENSO_2020_2030.xlsx")
+CENSO_2020_2030 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/CENSO_2020_2030.xlsx")
 
-## Censo 2005 -2019 Con Proyecciones de Poblacion por Edad y Sexo, Tomamos el Total
-## descartamos Urbano y Rural
+# ================================================
+# Aspectos Generales
+# ================================================
 
-## Filtramos la Poblacion Total eliminando las observaciones que solo tienen rural o urbano,
-#tener en cuenta que esta variable puede cambiar de nombre, depende del archivo .xlsx del 
-# DANE
+## La base tiene proyecciones de poblacion por Edad y Sexo, Tomamos el Total que es la suma de Urbano y Rural
+
+## Nota: Revisar el nombre de las variables, el DANE puede cambiarlos.
+
+# Filtramos en la base la columna "Total"
 
 CENSO_2005_2019 <- CENSO_2005_2019  %>% 
   filter(`ÁREA GEOGRÁFICA` == "Total")
 
+CENSO_2020_2030 <- CENSO_2020_2030  %>% 
+  filter(`ÁREA GEOGRÁFICA` == "Total")
 
-## Eliminamos las Variables que solo tienen información sobre la población de hombres y mujeres
-## Recordemos que este DATA Set tiene un alto nivel de desagregación, nos quedamos con el valor total.
 
-censo_filtrado_2019 <- CENSO_2005_2019  %>% 
+# ================================================
+# Sección: Menores de 18 años
+# ================================================
+
+
+# Eliminamos las Variables que solo tienen información de hombres y mujeres, dejamos solo "Total_#" que reune la población por edad
+# de hombres y mujeres.
+
+menores_18_2005_2019 <- CENSO_2005_2019  %>% 
   select(-(Hombres_0:`Mujeres_85 y más`))
 
-## Borramos las variables total hombres, total mujeres, y total general porque solo nos interesa la población
-## de 0 a 17 años.
+menores_18_2020_2030 <- CENSO_2020_2030  %>% 
+  select(-(Hombres_0:`Mujeres_85 y más`))
 
-censo_filtrado_2019 <- censo_filtrado_2019   %>% 
-  select(-(`Total Hombres`:`Total General`))
+# Vamos a crear una Nueva Variable llamada total_menores_18, esta variable suma la población de 0 a 17 años-
+# 7 y 24 son los números de las columnas que corresponden desde Total_0 ... Total_17. 
 
-## Vamos a crear una Nueva Variable llamada Menores, esta variable suma la población de 0 a 17 años
+menores_18_2005_2019 <- menores_18_2005_2019  %>% 
+  mutate(total_menores_18 = rowSums(menores_18_2005_2019[ , c(7:24)]))
 
-censo_filtrado_menores_2019 <- censo_filtrado_2019  %>% 
-  mutate(menores = rowSums(censo_filtrado_2019[ , c(7:24)]))
+menores_18_2020_2030 <- menores_18_2020_2030  %>% 
+  mutate(total_menores_18 = rowSums(menores_18_2020_2030[ , c(7:24)]))
 
-## Obtenemos el Denomimandor base de Menores de Edad
+## Vamos a construir nuestra Base Final filtrando las variables que solo necesitamos, dada la base que tenemos:
+# La Variable 4 = "MPIO" el identificador del Municipio
+# La Variable 5 = "AÑO" el año
+# La Variable 96 = "total_menores_18" la variable que creamos
 
-poblacion_menores_2019 <-censo_filtrado_menores_2019 %>% select(4,5,93)
+menores_18_2005_2019 <- menores_18_2005_2019 %>% select(4,5,96)
+
+menores_18_2020_2030 <- menores_18_2020_2030 %>% select(4,5,96)
 
 ## Exportamos
 
@@ -97,4 +114,8 @@ write_xlsx(df,"/Users/df.mendivelso10/Desktop/IMAGINA/VF_YA8.8.4xlsx", col_names
 
 getwd()
 
+
+# ================================================
+# Sección: Menores de 5 Años
+# ================================================
 
