@@ -52,19 +52,20 @@ menores_2020_2030 <- CENSO_2020_2030  %>%
 # 7 y 24 son los números de las columnas que corresponden desde Total_0 ... Total_17. 
 
 menores_18_2005_2019 <- menores_2005_2019  %>% 
-  mutate(total_menores_18 = rowSums(menores_18_2005_2019[ , c(7:24)]))
+  mutate(total_menores_18 = rowSums(menores_2005_2019[ , c(7:24)]))
 
 menores_18_2020_2030 <- menores_2020_2030  %>% 
-  mutate(total_menores_18 = rowSums(menores_18_2020_2030[ , c(7:24)]))
+  mutate(total_menores_18 = rowSums(menores_2020_2030[ , c(7:24)]))
 
 ## Vamos a construir nuestra Base Final filtrando las variables que solo necesitamos, dada la base que tenemos:
-# La Variable 4 = "MPIO" el identificador del Municipio
+# La Variable 4 = "MPIO" el identificador del Municipio pa la Base menores_18_2005_2019 
+# La Variable 3 = "MPIO" el identificador del Municipio pa la Base menores_18_2020_2030
 # La Variable 5 = "AÑO" el año
 # La Variable 96 = "total_menores_18" la variable que creamos
 
 menores_18_2005_2019 <- menores_18_2005_2019 %>% select(4,5,96)
 
-menores_18_2020_2030 <- menores_18_2020_2030 %>% select(4,5,96)
+menores_18_2020_2030 <- menores_18_2020_2030 %>% select(3,5,96)
 
 ## Exportamos los Archivos
 
@@ -87,17 +88,18 @@ menores_5_2020_2030 <- menores_2020_2030  %>%
   mutate(total_menores_5 = rowSums(menores_2020_2030[ , c(7:11)]))
 
 ## Vamos a construir nuestra Base Final filtrando las variables que solo necesitamos, dada la base que tenemos:
-# La Variable 4 = "MPIO" el identificador del Municipio
+# La Variable 4 = "MPIO" el identificador del Municipio para la Base menores_5_2005_2019
+# La Variable 3 = "MPIO" el identificador del Municipio para la Base menores_5_2020_2030
 # La Variable 5 = "AÑO" el año
 # La Variable 96 = "total_menores_18" la variable que creamos
 
 menores_5_2005_2019 <- menores_5_2005_2019 %>% select(4,5,96)
 
-menores_5_2020_2030 <- menores_5_2020_2030 %>% select(4,5,96)
+menores_5_2020_2030 <- menores_5_2020_2030 %>% select(3,5,96)
 
 ## Exportamos los Archivos
 
-write.xlsx(menores_5_2005_2019,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_18_2005-2009.xlsx", col_names = TRUE)
+write.xlsx(menores_5_2005_2019,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_5_2005-2009.xlsx", col_names = TRUE)
 
-write.xlsx(menores_5_2020_2030,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_18_2020-2030.xlsx", col_names = TRUE)
+write.xlsx(menores_5_2020_2030,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_5_2020-2030.xlsx", col_names = TRUE)
 
