@@ -39,5 +39,28 @@ YA_4.2 <- YA_4.2 %>%
 
 head(YA_4.2)
 
-#---- Ahora vamos a Realizar el Match con los Datos del Denominador.
+# ====================================================
+# Sección: Merge Data  
+# ====================================================
+
+# Verificamos la Estructura de los Datos, por ejemplo
+
+class(YA_4.2$codmpio)
+class(YA_4.2$anno)
+class(YA_4.2$IRA) # Podemos hacerlo paara cada una de las variables
+class(menores_5_años$codmpio)
+class(menores_5_años$anno)
+class(menores_5_años$total_menores_5)
+
+# Cambiamos de String a Numeric
+
+YA_4.2 <- YA_4.2 %>%
+  mutate(codmpio = as.numeric(codmpio))
+
+YA_4.2 <- YA_4.2 %>%
+  mutate(anno = as.numeric(anno))
+
+# Realizamos el Inner Join
+
+YA_4.2_VF <- inner_join(menores_5_años, YA_4.2, by = c("codmpio","anno"))
 
