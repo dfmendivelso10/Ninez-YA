@@ -103,3 +103,16 @@ write.xlsx(menores_5_2005_2019,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Proce
 
 write.xlsx(menores_5_2020_2030,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_5_2020-2030.xlsx", col_names = TRUE)
 
+# ================================================
+# Sección: Append de las Bases de Datos
+# ================================================
+
+
+# Combinar los data frames usando dplyr
+
+menores_5_años <- bind_rows(menores_5_2005_2009, menores_5_2020_2030)
+menores_18_años <- bind_rows(menores_18_2005_2009, menores_18_2020_2030)
+
+
+
+
