@@ -1,6 +1,9 @@
-## Librerías 
 
-# Revisar las librerias.
+
+# ================================================
+# YA 4.2 Tasa de mortalidad por Infección Respiratoria Aguda (IRA) en menores de 5 años
+# ================================================
+# Librerías y Paquetes
 
 install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr"))
 
