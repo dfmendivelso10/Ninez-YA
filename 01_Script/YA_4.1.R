@@ -72,6 +72,8 @@ YA_4.1_VF <- YA_4.1_VF %>%
 
 # Exportamos la Versión Final de Nuestro Indicador
 
-la
+write.xlsx(YA_4.1_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_4.1.xlsx", col_names = TRUE)
+
+
 
 
