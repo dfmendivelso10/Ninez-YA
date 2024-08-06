@@ -77,6 +77,6 @@ YA_4.2_VF <- YA_4.2_VF %>%
 
 write.xlsx(YA_4.2_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_4.2.xlsx", col_names = TRUE)
 
-
+# Fin del Código
 
 
