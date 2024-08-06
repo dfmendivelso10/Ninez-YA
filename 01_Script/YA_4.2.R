@@ -70,5 +70,10 @@ YA_4.2_VF <- YA_4.2_VF %>%
   mutate(tasa_IRA = (IRA / total_menores_5) * 100000)
   
   
-# Exportamos la Versión Final
+# Exportamos la Versión Final de Nuestro Indicador
+
+write.xlsx(YA_4.2_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_4.2.xlsx", col_names = TRUE)
+
+
+
 
