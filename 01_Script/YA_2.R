@@ -39,4 +39,10 @@ educ_inicial  <- educ_inicial  %>%
 educ_inicial  <- educ_inicial  %>%
   rename(codmpio = COD_DANE_MUNICIPIO)
 
+# ================================================
+# Creación de Sub - Data Sets
+# ================================================
+
+
+
 
