@@ -1,7 +1,7 @@
 
 
 # ================================================
-# YA 2 Educación Inicial 
+# YA 3 Educación Básica y Media
 # ================================================
 
 # Librerías y Paquetes
@@ -14,14 +14,12 @@ library(dplyr)
 library(openxlsx)
 library(readxl)
 library(stringr)
-library(lubridate) # Nos permite manejar fechas.
 
 # Cargamos Nuestra Base 
 
 educ_inicial <-  read.csv("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/preescolar_basica.csv")
 
 # Limpiamos la Base de Datos
-
 
 # Primero eliminamos las variables que No Necesitamos
 
@@ -34,13 +32,30 @@ educ_inicial <- educ_inicial %>% rename(anno = AÑO)
 
 educ_inicial <- educ_inicial %>% rename(codmpio = CÓDIGO_MUNICIPIO)
 
-educ_inicial <- educ_inicial %>% rename(neta_transicion = COBERTURA_NETA_TRANSICIÓN)
+# Cobertura Neta
 
-educ_inicial <- educ_inicial %>% rename(reprobacion_transicion = REPROBACIÓN_TRANSICIÓN)
+educ_inicial <- educ_inicial %>% rename(neta_primaria = COBERTURA_NETA_PRIMARIA)
 
-educ_inicial <- educ_inicial %>% rename(repitencia_transicion = REPITENCIA_TRANSICIÓN)
+educ_inicial <- educ_inicial %>% rename(neta_media = COBERTURA_NETA_MEDIA)
 
-educ_inicial <- educ_inicial %>% rename(desercion_transicion = DESERCIÓN_TRANSICIÓN)
+# Reprobación
+
+educ_inicial <- educ_inicial %>% rename(reprobacion_primaria = REPROBACIÓN_PRIMARIA)
+
+educ_inicial <- educ_inicial %>% rename(reprobacion_media = REPROBACIÓN_MEDIA)
+
+# Repitencia
+
+educ_inicial <- educ_inicial %>% rename(repitencia_primaria = REPITENCIA_PRIMARIA)
+
+educ_inicial <- educ_inicial %>% rename(repitencia_media = REPITENCIA_MEDIA)
+
+# Deserción
+
+educ_inicial <- educ_inicial %>% rename(desercion_primaria= DESERCIÓN_PRIMARIA)
+
+educ_inicial <- educ_inicial %>% rename(desercion_media= DESERCIÓN_MEDIA)
+
 
 # ================================================
 # Creación de Sub - Data Sets
@@ -48,7 +63,16 @@ educ_inicial <- educ_inicial %>% rename(desercion_transicion = DESERCIÓN_TRANSI
 
 # YA 2.1 Cobertura Neta Transición
 
-YA_2.1_VF <- subset(educ_inicial, select = c("anno", "codmpio","neta_transicion"))
+YA_3.4_VF <- subset(educ_inicial, select = c("anno", "codmpio","neta_primaria"))
+
+YA_3.4_VF <- subset(educ_inicial, select = c("anno", "codmpio","neta_media"))
+
+
+
+
+
+
+
 
 YA_2.2_VF  <- subset(educ_inicial, select = c("anno", "codmpio","reprobacion_transicion"))
 
