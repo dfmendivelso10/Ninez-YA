@@ -107,3 +107,10 @@ write.xlsx(YA_3.9_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.9
 write.xlsx(YA_3.10_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.10_VF.xlsx", col_names = TRUE)
 
 write.xlsx(YA_3.11_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.11_VF.xlsx", col_names = TRUE)
+
+
+
+
+
+
+
