@@ -127,8 +127,18 @@ icfes_x2019 <- read_delim("2019.txt", delim = "/", escape_double = FALSE, locale
 
 icfes_x2020 <- read_delim("2020.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
 
+# Vamos a Uniformizar los Datos
+
+icfes_2016$nivel1 <- as.character(icfes_2016$nivel1)
+icfes_x2017$nivel1 <- as.character(icfes_x2017$nivel1)
+icfes_x2018$nivel1 <- as.character(icfes_x2018$nivel1)
+icfes_x2019$nivel1 <- as.character(icfes_x2019$nivel1)
+icfes_x2020$nivel1 <- as.character(icfes_x2020$nivel1)
+
+
 ## Combinamos los Archivos
 
-combined_data <- bind_rows(X2016, X2017, X2018, X2019, x2020)
+combined_data <- bind_rows(icfes_2016, icfes_x2017, icfes_x2018, icfes_x2019, icfes_x2020)
+
 
 
