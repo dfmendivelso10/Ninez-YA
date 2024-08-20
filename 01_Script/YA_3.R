@@ -108,9 +108,12 @@ write.xlsx(YA_3.10_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.
 
 write.xlsx(YA_3.11_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.11_VF.xlsx", col_names = TRUE)
 
+# ================================================
+# Datos Icfes
+# ================================================
 
+# Cargamos los datos manualmente
 
-
-
+X2016 <- read_delim("D:/Users/enflujo/Documents/GitHub/OneDrive - Universidad de los andes/Data_NIÑEZ_YA/Raw_DATA/2016.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
 
 
