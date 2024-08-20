@@ -114,6 +114,17 @@ write.xlsx(YA_3.11_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.
 
 # Cargamos los datos manualmente
 
-X2016 <- read_delim("D:/Users/enflujo/Documents/GitHub/OneDrive - Universidad de los andes/Data_NIÑEZ_YA/Raw_DATA/2016.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
+setwd("D:/Users/enflujo/Documents/GitHub/OneDrive - Universidad de los andes/Data_NIÑEZ_YA/Raw_DATA")
+
+
+x2016 <- read_delim("2016.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
+
+x2017 <- read_delim("2017.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
+
+x2018 <- read_delim("2018.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
+
+x2019 <- read_delim("2019.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
+
+x2020 <- read_delim("2020.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
 
 
