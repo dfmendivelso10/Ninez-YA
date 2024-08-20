@@ -1,7 +1,7 @@
 
 
 # ================================================
-# YA 3 Educación Inicial 
+# YA 2 Educación Inicial 
 # ================================================
 
 # Librerías y Paquetes
@@ -18,53 +18,58 @@ library(lubridate) # Nos permite manejar fechas.
 
 # Cargamos Nuestra Base 
 
-educ_inicial <-  read.csv("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/Educacion_Inicial.csv")
+educ_inicial <-  read.csv("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/preescolar_basica.csv")
 
 # Limpiamos la Base de Datos
 
-educ_inicial <- educ_inicial %>%
-  mutate(FECHA = dmy(FECHA),   # Convertir la fecha de texto a formato Date
-         Año = year(FECHA))     # Extraemos el año y ya no tenemos día ni mes
 
-# Eliminamos Variables que no Necesitamos
+# Primero eliminamos las variables que No Necesitamos
 
 educ_inicial <- educ_inicial %>%
-  select(-1:-5,-7) # Acá Eliminamos las Primeras 5 columnas y la columna número 7
+  select(-3:-8) # Acá Eliminamos las Primeras 6 columnas y la columna número 8
 
-# Renombramos algunas variables
+# Renombrammos algunas variables
 
-educ_inicial  <- educ_inicial  %>%
-  rename(anno = Año)
+educ_inicial <- educ_inicial %>% rename(anno = AÑO)
 
-educ_inicial  <- educ_inicial  %>%
-  rename(codmpio = COD_DANE_MUNICIPIO)
+educ_inicial <- educ_inicial %>% rename(codmpio = CÓDIGO_MUNICIPIO)
+
+educ_inicial <- educ_inicial %>% rename(neta_transicion = COBERTURA_NETA_TRANSICIÓN)
+
+educ_inicial <- educ_inicial %>% rename(reprobacion_transicion = REPROBACIÓN_TRANSICIÓN)
+
+educ_inicial <- educ_inicial %>% rename(repitencia_transicion = REPITENCIA_TRANSICIÓN)
+
+educ_inicial <- educ_inicial %>% rename(desercion_transicion = DESERCIÓN_TRANSICIÓN)
 
 # ================================================
 # Creación de Sub - Data Sets
 # ================================================
 
-# Primero renombramos las variables
+# YA 2.1 Cobertura Neta Transición
 
-educ_inicial <- educ_inicial %>% rename(educ_inicial_icbf = INDICADOR.1..EDUCACIÓN.INICIAL.ICBF..Incluye.Mujeres.Gestantes.)
+YA_2.1_VF <- subset(educ_inicial, select = c("anno", "codmpio","neta_transicion"))
 
-educ_inicial <- educ_inicial %>% rename(educ_inicial_marco_integral = INDICADOR.2..NIÑOS.Y.NIÑAS.EN.PREESCOLAR.CON.EDUCACIÓN.INICIAL)
+YA_2.2_VF  <- subset(educ_inicial, select = c("anno", "codmpio","reprobacion_transicion"))
 
-educ_inicial <- educ_inicial %>% rename(porcentaje_marco_integral = INDICADOR.4..CONCURRENCIA.DE.ATENCIONES)
+YA_2.3_VF  <- subset(educ_inicial, select = c("anno", "codmpio","repitencia_transicion"))
 
-# Definimos los Datasets
+YA_2.4_VF <- subset(educ_inicial, select = c("anno", "codmpio","desercion_transicion"))
 
-educ_inicial_ICBF <- subset(educ_inicial, selec = c(codmpio, anno, educ_inicial_icbf))
+# ================================================
+# Exportamos Data Sets
+# ================================================
 
-educ_inicial_marco_integral <- subset(educ_inicial, selec = c(codmpio, anno, educ_inicial_marco_integral))
+write.xlsx(YA_2.1_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.1_VF.xlsx", col_names = TRUE)
 
-porcentaje_marco_integral <- subset(educ_inicial, selec = c(codmpio, anno, porcentaje_marco_integral))
+write.xlsx(YA_2.2_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.2_VF.xlsx", col_names = TRUE)
 
-# Exportamos los Datasets
+write.xlsx(YA_2.3_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.3_VF.xlsx", col_names = TRUE)
 
-write.xlsx(educ_inicial_ICBF, file = "~/GitHub/Ninez-YA/03_Process/educ_inicial_ICBF.xlsx", col_names = TRUE)
+write.xlsx(YA_2.4_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.4_VF.xlsx", col_names = TRUE)
 
-write.xlsx(educ_inicial_marco_integral, file = "~/GitHub/Ninez-YA/03_Process/educ_inicial_marco_integral.xlsx", col_names = TRUE)
 
-write.xlsx(porcentaje_marco_integral, file = "~/GitHub/Ninez-YA/03_Process/porcentaje_marco_integral.xlsx", col_names = TRUE)
+
+
 
 
