@@ -64,10 +64,8 @@ rm(X2016, X2017, X2018, X2019, X2020, X2021)
 
 saber_11 <- as.data.table(saber_11)
 
-
 # Limpiamos las Bases  de Datos
 saber_11 <- saber_11[ , -c(2:3, 5:13, 15:27)]
-
 
 # Rename de Variables
 
@@ -76,25 +74,6 @@ saber_11 <- rename(saber_11, codmpio = codigodane_municipio, anno = periodo)
 # Conservar solo los primeros 4 dígitos de la variable año * Esto es una pequeña correción
 
 saber_11$anno <- substr(saber_11$anno, 1, 4)
-
-#======= Limpieza de Datos desde 2022 en adelante
-
-# Primero Unimos las Bases de Datos 20221 : 20232
-
-saber_11_2021_2023 <- rbindlist(list(X20221, X20222, X20231, X20232), fill = TRUE)
-
-# Limpiamos las Bases  de Datos
-saber_11_2021_2023  <- saber_11_2021_2023 [, c(5, 56, 60, 63, 69, 75)]
-
-# Rename de Variables
-
-saber_11_2021_2023  <- rename(saber_11_2021_2023 , codmpio = ESTU_COD_MCPIO_PRESENTACION, anno = PERIODO)
-
-# Conservar solo los primeros 4 dígitos de la variable año * Esto es una pequeña correción
-
-saber_11_2021_2023 $anno <- substr(saber_11_2021_2023 $anno, 1, 4)
-
-
 
 
 # ================================================
@@ -115,15 +94,12 @@ datos_wide <- promedios_por_municipio %>%
   pivot_wider(names_from = nombre_prueba, values_from = promedio_ponderado)
 
 # Creamos la variable total sumando los promedios
-datos_wide <- datos_wide %>%
-  mutate(total = rowSums(select(., starts_with("CIENCIAS NATURALES"), 
-                                starts_with("INGLÉS"), 
-                                starts_with("LECTURA CRÍTICA"), 
-                                starts_with("MATEMÁTICAS"), 
-                                starts_with("SOCIALES Y CIUDADANAS")), 
-                         na.rm = TRUE))
 
-# Unificamos los nombres con la Base que está mas adelante "promedios, son los datos de 2022 en adelante"
+datos_wide <- datos_wide %>%
+  mutate(total = ((3 * `LECTURA CRÍTICA` + 3 * `MATEMÁTICAS` + 3 * `SOCIALES Y CIUDADANAS` + 3 * `CIENCIAS NATURALES` + `INGLÉS`) / 13) * 5)
+
+
+# Renombramos las Variables
 
 datos_wide <- datos_wide %>%
   rename(
@@ -132,6 +108,28 @@ datos_wide <- datos_wide %>%
     promedio_sociales_ciudadanas = `SOCIALES Y CIUDADANAS`,
     promedio_global = total
   )
+
+
+# ================================================
+# Limpieza de Datos desde 2022 en adelante
+# ================================================
+
+
+# Primero Unimos las Bases de Datos 20221 : 20232
+
+saber_11_2021_2023 <- rbindlist(list(X20221, X20222, X20231, X20232), fill = TRUE)
+
+# Limpiamos las Bases  de Datos
+saber_11_2021_2023  <- saber_11_2021_2023 [, c(5, 56, 60, 63, 69, 75)]
+
+# Rename de Variables
+
+saber_11_2021_2023  <- rename(saber_11_2021_2023 , codmpio = ESTU_COD_MCPIO_PRESENTACION, anno = PERIODO)
+
+# Conservar solo los primeros 4 dígitos de la variable año * Esto es una pequeña correción
+
+saber_11_2021_2023 $anno <- substr(saber_11_2021_2023 $anno, 1, 4)
+
 
 # ====================================================
 # Calculamos el Promedio de la Prueba 2022 en adelante
@@ -146,13 +144,18 @@ promedios <- saber_11_2021_2023 %>%
     promedio_global = mean(PUNT_GLOBAL, na.rm = TRUE)
   ) 
 
-# Unificamos las Bases de Datos 
 
+
+# ====================================================
+# Unificamos las Bases de Datos 
+# ====================================================
 
 resultados_saber_11 <- rbindlist(list(datos_wide, promedios), fill = TRUE)
 
-###########################################################################################################################
+rm(datos_wide, promedios, promedios_por_municipio, saber_11, saber_11_2021_2023, X20221, X20222, X20231, X20232)
 
+
+###########################################################################################################################
 
 ## Ahora creamos los Distintos Ya 
 
@@ -173,4 +176,7 @@ write.xlsx(matematicas, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_Y
 
 write.xlsx(global, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_PUNT_MATEMATICAl.xlsx", col_names = TRUE)
 
-
+resultados_saber_11 %>%
+  filter(codmpio == 11001) %>%
+  select(promedio_global) %>%
+  print()
