@@ -172,9 +172,9 @@ global <- resultados_saber_11 %>%
 
 write.xlsx(español, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_PUNT_LECTURA_CRITICA.xlsx", col_names = TRUE)
 
-write.xlsx(matematicas, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_matematicasl.xlsx", col_names = TRUE)
+write.xlsx(matematicas, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_PUNT_MATEMATICAl.xlsx", col_names = TRUE)
 
-write.xlsx(global, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_PUNT_MATEMATICAl.xlsx", col_names = TRUE)
+write.xlsx(global, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_PUNT_GLOBAl.xlsx", col_names = TRUE)
 
 resultados_saber_11 %>%
   filter(codmpio == 11001) %>%
