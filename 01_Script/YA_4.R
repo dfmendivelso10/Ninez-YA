@@ -5,7 +5,7 @@
 # ================================================
 # Librerías y Paquetes
 
-install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr"))
+install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr", "data.table"))
 
 
 library(tidyr)
@@ -13,6 +13,8 @@ library(dplyr)
 library(openxlsx)
 library(readxl)
 library(stringr)
+library(data.table)
+library(readr)
 
 
 
@@ -28,33 +30,54 @@ procu_2021<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Proc
 procu_2022<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2022.xlsx", sheet = "Ind. Patología")
 procu_2023<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2023.xlsx", sheet = "Ind. Patología")
 
+# ====================================================
+# Sección: Merge Data  
+# ====================================================
 
+procuraduria <- rbindlist(list(procu_2015, procu_2016, procu_2017, procu_2018, procu_2019, procu_2020, procu_2021, procu_2022, procu_2023), fill = TRUE)
 
+# Limpiamos Memoria
 
+rm(procu_2015, procu_2016, procu_2017, procu_2018, procu_2018, procu_2019, procu_2020, procu_2020, procu_2021, procu_2022, procu_2023)
 
 
 # Filtramos los Datos
 
-procu_2015 <- procu_2015[, c(2, 4, 6, 7, 8, 9, 10)]
+procuraduria <- procuraduria[, c(2, 4, 6, 7, 8, 9, 10)]
 
+
+# Rename de Variables
+
+procuraduria   <- rename(procuraduria , codmpio = `Código Municipio`, anno = `Periodo del Indicador`)
+
+# Pasamos de Long a Wide
+
+
+  pivot_wider(names_from = nombre_prueba, values_from = promedio_ponderado)
 
 # Separamos el CODMPIO del Nombre del Municipio
 
 YA_1.3$codmpio <- str_replace(YA_1.3$codmpio, " - .*", "")
 
-# Organizamos la Base de Datos, estos están en Wide, de manera que
-# los vamos a convertir a Longer.
+# ====================================================
+# Sección: Filtrar 
+# ====================================================
 
-YA_1.3 <- YA_1.3 %>%
-  pivot_longer(
-    cols = starts_with("20"), # Seleccionamos las columnas que empiezan con "20" (años desde 2000)
-    names_to = "anno", # Nuevo nombre de columna para los nombres de las columnas originales
-    values_to = "mortalidad_menores_5" # Nuevo nombre de columna para los valores
+procuraduria_0a5 <- procuraduria %>%
+  filter(`Rangos de edad o edades simples` == "(01 a 05)")
+
+procuraduria_0a5  <-procuraduria_0a5  %>%
+  select(-`Rangos de edad o edades simples`)
+
+
+procuraduria_0a5 <- procuraduria %>%
+  pivot_wider(
+    names_from = `Nombre del indicador`,
+    values_from = c(`Numerador (casos)`, `Denominador (Población)`, `Resultado (Tasa)`),
+    values_fn = list(`Numerador (casos)` = sum, `Denominador (Población)` = sum, `Resultado (Tasa)` = mean)
   )
 
-# Podemos validar el formato Long
 
-head(YA_1.3)
 
 # ====================================================
 # Sección: Merge Data  
