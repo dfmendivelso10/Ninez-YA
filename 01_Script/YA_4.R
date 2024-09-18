@@ -24,9 +24,9 @@ procu_2017<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Proc
 procu_2018<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2018.xlsx", sheet = "Ind. Patología")
 procu_2019<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2019.xlsx", sheet = "Ind. Patología")
 procu_2020<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2020.xlsx", sheet = "Ind. Patología")
-procu_2021- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2021.xlsx", sheet = "Ind. Patología")
-procu_2022- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2022.xlsx", sheet = "Ind. Patología")
-procu_2023 read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2023.xlsx", sheet = "Ind. Patología")
+procu_2021<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2021.xlsx", sheet = "Ind. Patología")
+procu_2022<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2022.xlsx", sheet = "Ind. Patología")
+procu_2023<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2023.xlsx", sheet = "Ind. Patología")
 
 
 
