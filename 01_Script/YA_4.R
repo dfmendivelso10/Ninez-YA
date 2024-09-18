@@ -16,13 +16,27 @@ library(stringr)
 
 
 
-# Cargamos Nuestra Base YA_1.3
+# Cargamos los Chunks de las Bases de Datos
 
-YA_1.3 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_1.3.xlsx")
+procu_2015 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2015.xlsx", sheet = "Ind. Patología")
+procu_2016<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2016.xlsx", sheet = "Ind. Patología")
+procu_2017<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2017.xlsx", sheet = "Ind. Patología")
+procu_2018<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2018.xlsx", sheet = "Ind. Patología")
+procu_2019<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2019.xlsx", sheet = "Ind. Patología")
+procu_2020<- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2020.xlsx", sheet = "Ind. Patología")
+procu_2021- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2021.xlsx", sheet = "Ind. Patología")
+procu_2022- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2022.xlsx", sheet = "Ind. Patología")
+procu_2023 read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2023.xlsx", sheet = "Ind. Patología")
 
-# Borramos la Variable Total General
 
-YA_1.3 <- YA_1.3[ , -21]
+
+
+
+
+# Filtramos los Datos
+
+procu_2015 <- procu_2015[, c(2, 4, 6, 7, 8, 9, 10)]
+
 
 # Separamos el CODMPIO del Nombre del Municipio
 
