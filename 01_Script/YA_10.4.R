@@ -1,18 +1,17 @@
-
-
 # ================================================
-# YA 10.3
+# YA 10.4
 # ================================================
 # Librerías y Paquetes
 
 install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr", "data.table"))
 
-
-library(readxl)
-library(data.table)
+library(tidyr)
 library(dplyr)
-library(openxlsx) # Para exportar el archivo a Excel
+library(openxlsx)
+library(readxl)
 library(stringr)
+library(data.table)
+library(readr)
 
 # ================================================
 # Cargar datos
@@ -57,19 +56,30 @@ procuraduria <- procuraduria[, .(codmpio = `Código Municipio`,
 # Extraer solo los primeros 4 dígitos del año
 procuraduria$anno <- str_sub(procuraduria$anno, 1, 4)
 
-# Filtrar por el indicador y el rango de edad
+# ================================================
+# Filtrar por el indicador y los rangos de edad, incluyendo menores de un año
+# ================================================
+
 interpersonal <- procuraduria %>%
   filter(str_trim(`Nombre del indicador`) == "Tasa de violencia interpersonal contra niños, niñas y adolescentes",
-         `Rangos de edad o edades simples` == "(01 a 05)")
+         `Rangos de edad o edades simples` %in% c("(01 a 05)", "Menores de un año"))
 
-# Seleccionar las columnas finales
-interpersonal <- interpersonal[, .(codmpio, anno, casos, denominador, interpersonal)]
+# ================================================
+# Agrupar, sumar y recalcular la tasa unificando rangos de edad
+# ================================================
+
+interpersonal_sumado <- interpersonal %>%
+  group_by(codmpio, anno, `Nombre del indicador`) %>%  # Agrupamos por municipio y año
+  summarise(casos = sum(casos, na.rm = TRUE),          # Sumamos los casos
+            denominador = sum(denominador, na.rm = TRUE)) %>%  # Sumamos el denominador
+  mutate(interpersonal = (casos / denominador) * 100000,  # Recalculamos la tasa
+         `Rangos de edad o edades simples` = "(0 a 5)") %>%  # Unificamos el rango de edad con el nombre "(0 a 5)"
+  ungroup()
 
 # ================================================
 # Exportar resultado a Excel
 # ================================================
 
-write.xlsx(interpersonal, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_10.4.xlsx", colNames = TRUE)
+write.xlsx(interpersonal_sumado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_10.4.xlsx", colNames = TRUE)
 
 # Fin del Código
-

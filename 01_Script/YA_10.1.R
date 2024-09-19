@@ -1,7 +1,5 @@
-
-
 # ================================================
-# YA 10.1 Homicidios  
+# YA 10.1 Homicidios
 # ================================================
 # Librerías y Paquetes
 
@@ -19,8 +17,10 @@ library(readr)
 # Cargar datos
 # ================================================
 
-# Definir los años y cargar los datos de cada uno
+# Definir la lista de años
 years <- 2015:2023
+
+# Leer los archivos en un solo paso usando lapply
 procu_list <- lapply(years, function(year) {
   read_excel(paste0("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_", year, ".xlsx"), 
              sheet = "Ind. Patología", 
@@ -28,49 +28,58 @@ procu_list <- lapply(years, function(year) {
 })
 
 # ================================================
-# Unir data frames y estandarizar columnas
+# Estandarizar nombres y unir data frames
 # ================================================
 
-# Encontrar las columnas comunes
-columnas_comunes <- Reduce(intersect, lapply(procu_list, names))
+# Estandarizar nombre de la columna 'Periodo del indicador'
+procu_list <- lapply(procu_list, function(df) {
+  setnames(df, old = "Periodo del indicador", new = "Periodo del Indicador", skip_absent = TRUE)
+  return(df)
+})
 
-# Unir los data frames usando las columnas comunes
-procuraduria <- rbindlist(lapply(procu_list, function(x) x[, columnas_comunes, with = FALSE]))
-
-# Liberar memoria eliminando objetos innecesarios
-rm(procu_list)
+# Unir los data frames
+procuraduria <- rbindlist(procu_list, fill = TRUE)
 
 # ================================================
-# Filtrar y renombrar columnas
+# Filtrar columnas y renombrar variables
 # ================================================
 
-# Seleccionar columnas necesarias y renombrar
-procuraduria <- procuraduria %>%
-  select(codmpio = `Código Municipio`, 
-         anno = `Periodo del Indicador`, 
-         `Nombre del indicador`, 
-         `Rangos de edad o edades simples`, 
-         casos = `Numerador (casos)`, 
-         denominador = `Denominador (Población)`, 
-         homicidios = `Resultado (Tasa)`)
+# Seleccionar columnas necesarias
+procuraduria <- procuraduria[, .(codmpio = `Código Municipio`, 
+                                 anno = `Periodo del Indicador`, 
+                                 `Nombre del indicador`, 
+                                 `Rangos de edad o edades simples`, 
+                                 casos = `Numerador (casos)`, 
+                                 denominador = `Denominador (Población)`, 
+                                 homicidios = `Resultado (Tasa)`)]
 
-# Limitar la columna de año a los primeros 4 dígitos
+# Extraer solo los primeros 4 dígitos del año
 procuraduria$anno <- str_sub(procuraduria$anno, 1, 4)
 
 # ================================================
-# Filtrar por el indicador de homicidios
+# Filtrar por el indicador de homicidios y los rangos de edad
 # ================================================
 
 homicidios <- procuraduria %>%
   filter(str_trim(`Nombre del indicador`) == "Tasa de Homicidios en niños, niñas y adolescentes",
-         `Rangos de edad o edades simples` == "(01 a 05)") %>%
-  select(codmpio, anno, casos, denominador, homicidios)
+         `Rangos de edad o edades simples` %in% c("(01 a 05)", "Menores de un año"))
 
 # ================================================
-# Exportar a Excel
+# Agrupar, sumar y recalcular la tasa unificando rangos de edad
 # ================================================
 
-write.xlsx(homicidios, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_10.1.xlsx", colNames = TRUE)
+homicidios_sumado <- homicidios %>%
+  group_by(codmpio, anno, `Nombre del indicador`) %>%  # Agrupamos por municipio y año
+  summarise(casos = sum(casos, na.rm = TRUE),          # Sumamos los casos
+            denominador = sum(denominador, na.rm = TRUE)) %>%  # Sumamos el denominador
+  mutate(homicidios = (casos / denominador) * 100000,  # Recalculamos la tasa
+         `Rangos de edad o edades simples` = "(0 a 5)") %>%  # Unificamos el rango de edad con el nombre "(0 a 5)"
+  ungroup()
+
+# ================================================
+# Exportar resultado a Excel
+# ================================================
+
+write.xlsx(homicidios_sumado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_10.1.xlsx", colNames = TRUE)
 
 # Fin del Código
-
