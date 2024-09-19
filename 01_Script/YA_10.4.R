@@ -8,95 +8,68 @@
 install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr", "data.table"))
 
 
-library(tidyr)
-library(dplyr)
-library(openxlsx)
 library(readxl)
-library(stringr)
 library(data.table)
-library(readr)
+library(dplyr)
+library(openxlsx) # Para exportar el archivo a Excel
+library(stringr)
 
+# ================================================
+# Cargar datos
+# ================================================
 
+# Definir la lista de años
+years <- 2015:2023
 
+# Leer los archivos en un solo paso usando lapply
+procu_list <- lapply(years, function(year) {
+  read_excel(paste0("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_", year, ".xlsx"), 
+             sheet = "Ind. Violencia Interpersonal", 
+             na = "N/A")
+})
 
-# Cargamos los datos ajustados con la hoja "Ind. Patología"
+# ================================================
+# Estandarizar nombres y unir data frames
+# ================================================
 
-procu_2015 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2015.xlsx", 
-                         sheet = "Ind. Patología", na = "N/A")
+# Estandarizar nombre de la columna 'Periodo del indicador'
+procu_list <- lapply(procu_list, function(df) {
+  setnames(df, old = "Periodo del indicador", new = "Periodo del Indicador", skip_absent = TRUE)
+  return(df)
+})
 
-procu_2016 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2016.xlsx", 
-                         sheet = "Ind. Patología", na = "N/A")
+# Unir los data frames
+procuraduria <- rbindlist(procu_list, fill = TRUE)
 
-procu_2017 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2017.xlsx", 
-                         sheet = "Ind. Patología", na = "N/A")
+# ================================================
+# Filtrar columnas y renombrar variables
+# ================================================
 
-procu_2018 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2018.xlsx", 
-                         sheet = "Ind. Patología", na = "N/A")
+# Seleccionar columnas necesarias
+procuraduria <- procuraduria[, .(codmpio = `Código Municipio`, 
+                                 anno = `Periodo del Indicador`, 
+                                 `Nombre del indicador`, 
+                                 `Rangos de edad o edades simples`, 
+                                 casos = `Numerador (casos)`, 
+                                 denominador = `Denominador (Población)`, 
+                                 interpersonal = `Resultado (Tasa)`)]
 
-procu_2019 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2019.xlsx", 
-                         sheet = "Ind. Patología", na = "N/A")
+# Extraer solo los primeros 4 dígitos del año
+procuraduria$anno <- str_sub(procuraduria$anno, 1, 4)
 
-procu_2020 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2020.xlsx", 
-                         sheet = "Ind. Patología", na = "N/A")
-
-procu_2021 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2021.xlsx", 
-                         sheet = "Ind. Patología", na = "N/A")
-
-procu_2022 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2022.xlsx", 
-                         sheet = "Ind. Patología", na = "N/A")
-
-procu_2023 <- read_excel("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_2023.xlsx", 
-                         sheet = "Ind. Patología", na = "N/A")
-
-# ====================================================
-# Sección: Merge Data  
-# ====================================================
-
-
-# Crear una lista con todos los data frames
-
-procu_list <- list(procu_2015, procu_2016, procu_2017, procu_2018, procu_2019, procu_2020, procu_2021, procu_2022, procu_2023)
-
-# Encontrar las columnas comunes
-
-columnas_comunes <- Reduce(intersect, lapply(procu_list, names))
-
-# Aplicar rbindlist directamente sobre la lista de data frames filtrados por columnas comunes
-
-procuraduria <- rbindlist(lapply(procu_list, function(x) x[, columnas_comunes, with = FALSE]))
-
-# Limpiamos Memoria
-rm(procu_2015, procu_2016, procu_2017, procu_2018, procu_2019, procu_2020, procu_2021, procu_2022, procu_2023)
-
-
-
-# Dejamos solo las variables necesarias
-
-procuraduria <- procuraduria[, c(2, 4, 6, 7, 8, 9, 10)]
-
-
-# Rename de Variables
-
-procuraduria   <- rename(procuraduria , codmpio = `Código Municipio`, anno = `Periodo del Indicador`)
-
-
-# ====================================================
-# Sección: Filtrar 
-# ====================================================
-
-interpersonal<- procuraduria %>%
+# Filtrar por el indicador y el rango de edad
+interpersonal <- procuraduria %>%
   filter(str_trim(`Nombre del indicador`) == "Tasa de violencia interpersonal contra niños, niñas y adolescentes",
          `Rangos de edad o edades simples` == "(01 a 05)")
 
-interpersonal  <- interpersonal [, c(1,3,5,6,7)]
+# Seleccionar las columnas finales
+interpersonal <- interpersonal[, .(codmpio, anno, casos, denominador, interpersonal)]
 
+# ================================================
+# Exportar resultado a Excel
+# ================================================
 
-interpersonal <- rename(interpersonal, casos = `Numerador (casos)`, denominador = `Denominador (Población)`, interpersonal = `Resultado (Tasa)` )
-
-# Exportamos la Versión Final de Nuestro Indicador
-
-write.xlsx(interpersonal, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_10.4.xlsx", col_names = TRUE)
+write.xlsx(interpersonal, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_10.4.xlsx", colNames = TRUE)
 
 # Fin del Código
-
 
