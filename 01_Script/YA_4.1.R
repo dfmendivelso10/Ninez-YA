@@ -75,5 +75,8 @@ YA_4.1_VF <- YA_4.1_VF %>%
 write.xlsx(YA_4.1, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_4.1.xlsx", col_names = TRUE)
 
 
+### Dejarlo hasta el 2023
+
+
 
 
