@@ -1,7 +1,7 @@
 
 
 # ================================================
-# YA 8. ICBF
+# YA 9. ICBF
 # ================================================
 # Librerías y Paquetes
 
@@ -116,15 +116,15 @@ write.xlsx(SRPA_2, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_8.2.xl
 # Cargar datos
 # ================================================
 
-SRPA_2 <- read.csv("~/Documents/GitHub/Ninez-YA/03_Process/SRPA_2.csv")
+SRPA_Punto_1 <- read.csv("~/Documents/GitHub/Ninez-YA/03_Process/SRPA_Punto_1.csv")
 
 # ================================================
 # Ajustamos el Nombre de las Variables
 # ================================================
 
-SRPA_2  <- SRPA_2  %>%
+SRPA_Punto_1  <- SRPA_Punto_1  %>%
   rename(
-    SRPA_2 = `BENEFICIARIOS`,  
+    SRPA_Punto_1 = `BENEFICIARIOS`,  
     anno = VIGENCIA )
 
 # Filtramos las Variables
