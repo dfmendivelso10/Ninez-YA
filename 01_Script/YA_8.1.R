@@ -1,5 +1,5 @@
 # ================================================
-# YA 10.1 Homicidios
+# YA 8.1 Homicidios
 # ================================================
 # Librerías y Paquetes
 
@@ -61,8 +61,7 @@ procuraduria$anno <- str_sub(procuraduria$anno, 1, 4)
 # ================================================
 
 homicidios <- procuraduria %>%
-  filter(str_trim(`Nombre del indicador`) == "Tasa de Homicidios en niños, niñas y adolescentes",
-         `Rangos de edad o edades simples` %in% c("(01 a 05)", "Menores de un año"))
+  filter(str_trim(`Nombre del indicador`) == "Tasa de Homicidios en niños, niñas y adolescentes")
 
 # ================================================
 # Agrupar, sumar y recalcular la tasa unificando rangos de edad
@@ -72,8 +71,8 @@ homicidios_sumado <- homicidios %>%
   group_by(codmpio, anno, `Nombre del indicador`) %>%  # Agrupamos por municipio y año
   summarise(casos = sum(casos, na.rm = TRUE),          # Sumamos los casos
             denominador = sum(denominador, na.rm = TRUE)) %>%  # Sumamos el denominador
-  mutate(homicidios = (casos / denominador) * 100000,  # Recalculamos la tasa
-         `Rangos de edad o edades simples` = "(0 a 5)") %>%  # Unificamos el rango de edad con el nombre "(0 a 5)"
+  mutate(homicidios = (casos / denominador) * 100000,  )# Recalculamos la tasa
+        
   ungroup()
 
 # ================================================
