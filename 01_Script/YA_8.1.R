@@ -79,6 +79,11 @@ homicidios_sumado <- homicidios %>%
   mutate(homicidios = (casos / denominador) * 100000,  )# Recalculamos la tasa
         
 
+# Ajuste final Nombre Variables
+
+homicidios_sumado <- homicidios_sumado %>%
+  rename(numerador = casos)
+
 # ================================================
 # Exportar resultado a Excel
 # ================================================

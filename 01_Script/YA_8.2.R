@@ -78,6 +78,11 @@ delito_sexual_sumado <- delito_sexual %>%
   mutate(sexual = (casos / denominador) * 100000)  # Recalcular la tasa
 
 
+# Ajuste final Nombre Variables
+
+delito_sexual_sumado <- delito_sexual_sumado %>%
+  rename(numerador = casos)
+
 # ================================================
 # Exportar resultado a Excel
 # ================================================
