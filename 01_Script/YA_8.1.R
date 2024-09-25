@@ -18,6 +18,7 @@ library(readr)
 # ================================================
 
 # Definir la lista de años
+
 years <- 2015:2023
 
 # Leer los archivos en un solo paso usando lapply
@@ -27,17 +28,20 @@ procu_list <- lapply(years, function(year) {
              na = "N/A")
 })
 
+
 # ================================================
 # Estandarizar nombres y unir data frames
 # ================================================
 
 # Estandarizar nombre de la columna 'Periodo del indicador'
+
 procu_list <- lapply(procu_list, function(df) {
   setnames(df, old = "Periodo del indicador", new = "Periodo del Indicador", skip_absent = TRUE)
   return(df)
 })
 
 # Unir los data frames
+
 procuraduria <- rbindlist(procu_list, fill = TRUE)
 
 # ================================================
@@ -45,6 +49,7 @@ procuraduria <- rbindlist(procu_list, fill = TRUE)
 # ================================================
 
 # Seleccionar columnas necesarias
+
 procuraduria <- procuraduria[, .(codmpio = `Código Municipio`, 
                                  anno = `Periodo del Indicador`, 
                                  `Nombre del indicador`, 
@@ -73,12 +78,11 @@ homicidios_sumado <- homicidios %>%
             denominador = sum(denominador, na.rm = TRUE)) %>%  # Sumamos el denominador
   mutate(homicidios = (casos / denominador) * 100000,  )# Recalculamos la tasa
         
-  ungroup()
 
 # ================================================
 # Exportar resultado a Excel
 # ================================================
 
-write.xlsx(homicidios_sumado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_10.1.xlsx", colNames = TRUE)
+write.xlsx(homicidios_sumado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_8.1.xlsx", colNames = TRUE)
 
 # Fin del Código

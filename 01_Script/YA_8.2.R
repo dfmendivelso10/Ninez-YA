@@ -18,6 +18,7 @@ library(readr)
 # ================================================
 
 # Definir la lista de años y cargar los datos
+
 years <- 2015:2023
 procu_list <- lapply(years, function(year) {
   read_excel(paste0("Documents/GitHub/Ninez-YA/02_RAW-Data/Procuraduria/Procuraduría_", year, ".xlsx"), 
@@ -61,9 +62,10 @@ procuraduria$anno <- str_sub(procuraduria$anno, 1, 4)
 # Filtrar por el indicador de violencia sexual y los rangos de edad, incluyendo menores de un año
 # ================================================
 
+# Filtrar por el valor correcto en 'Nombre del indicador'
 delito_sexual <- procuraduria %>%
-  filter(str_trim(`Nombre del indicador`) == "Tasa de exámenes médico legales por presunto delito sexual contra niños, niñas y adolescentes",
-         `Rangos de edad o edades simples` %in% c("(01 a 05)", "Menores de un año"))
+  filter(str_trim(`Nombre del indicador`) == "Tasa de exámenes médico legales por presunto delito sexual contra niños, niñas y adolescentes")
+
 
 # ================================================
 # Agrupar, sumar y recalcular la tasa unificando rangos de edad
@@ -73,14 +75,13 @@ delito_sexual_sumado <- delito_sexual %>%
   group_by(codmpio, anno, `Nombre del indicador`) %>%
   summarise(casos = sum(casos, na.rm = TRUE),          
             denominador = sum(denominador, na.rm = TRUE)) %>%
-  mutate(sexual = (casos / denominador) * 100000,  # Recalcular la tasa
-         `Rangos de edad o edades simples` = "(0 a 5)") %>%
-  ungroup()
+  mutate(sexual = (casos / denominador) * 100000)  # Recalcular la tasa
+
 
 # ================================================
 # Exportar resultado a Excel
 # ================================================
 
-write.xlsx(delito_sexual_sumado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_10.2.xlsx", colNames = TRUE)
+write.xlsx(delito_sexual_sumado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_8.2.xlsx", colNames = TRUE)
 
 # Fin del Código

@@ -61,8 +61,7 @@ procuraduria$anno <- str_sub(procuraduria$anno, 1, 4)
 # ================================================
 
 interpersonal <- procuraduria %>%
-  filter(str_trim(`Nombre del indicador`) == "Tasa de violencia interpersonal contra niños, niñas y adolescentes",
-         `Rangos de edad o edades simples` %in% c("(01 a 05)", "Menores de un año"))
+  filter(str_trim(`Nombre del indicador`) == "Tasa de violencia interpersonal contra niños, niñas y adolescentes")
 
 # ================================================
 # Agrupar, sumar y recalcular la tasa unificando rangos de edad
@@ -72,14 +71,12 @@ interpersonal_sumado <- interpersonal %>%
   group_by(codmpio, anno, `Nombre del indicador`) %>%  # Agrupamos por municipio y año
   summarise(casos = sum(casos, na.rm = TRUE),          # Sumamos los casos
             denominador = sum(denominador, na.rm = TRUE)) %>%  # Sumamos el denominador
-  mutate(interpersonal = (casos / denominador) * 100000,  # Recalculamos la tasa
-         `Rangos de edad o edades simples` = "(0 a 5)") %>%  # Unificamos el rango de edad con el nombre "(0 a 5)"
-  ungroup()
+  mutate(interpersonal = (casos / denominador) * 100000)  # Recalculamos la tasa
 
 # ================================================
 # Exportar resultado a Excel
 # ================================================
 
-write.xlsx(interpersonal_sumado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_10.4.xlsx", colNames = TRUE)
+write.xlsx(interpersonal_sumado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_8.4.xlsx", colNames = TRUE)
 
 # Fin del Código
