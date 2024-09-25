@@ -74,6 +74,11 @@ intrafamiliar_sumado <- intrafamiliar %>%
             denominador = sum(denominador, na.rm = TRUE)) %>%
   mutate(intrafamiliar = (casos / denominador) * 100000) # Recalcular la tasa
 
+# Ajuste final Nombre Variables
+
+intrafamiliar_sumado <- intrafamiliar_sumado %>%
+  rename(numerador = casos)
+
 # ================================================
 # Exportar el resultado a un archivo Excel
 # ================================================

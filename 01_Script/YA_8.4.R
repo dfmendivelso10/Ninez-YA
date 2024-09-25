@@ -73,6 +73,11 @@ interpersonal_sumado <- interpersonal %>%
             denominador = sum(denominador, na.rm = TRUE)) %>%  # Sumamos el denominador
   mutate(interpersonal = (casos / denominador) * 100000)  # Recalculamos la tasa
 
+# Ajuste final Nombre Variables
+
+intrapersonal_sumado <- intrafamiliar_sumado %>%
+  rename(numerador = casos)
+
 # ================================================
 # Exportar resultado a Excel
 # ================================================
