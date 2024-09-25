@@ -17,7 +17,7 @@ library(stringr)
 
 # Cargamos Nuestra Base 
 
-educ_inicial <-  read.csv("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/preescolar_basica.csv")
+educ_inicial <-  read.csv("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/MEN_ESTADISTICAS.csv")
 
 # Limpiamos la Base de Datos
 
@@ -108,37 +108,6 @@ write.xlsx(YA_3.10_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.
 
 write.xlsx(YA_3.11_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.11_VF.xlsx", col_names = TRUE)
 
-# ================================================
-# Datos Icfes
-# ================================================
-
-# Cargamos los datos manualmente
-
-setwd("D:/Users/enflujo/Documents/GitHub/OneDrive - Universidad de los andes/Data_NIÑEZ_YA/Raw_DATA")
-
-
-icfes_2016 <- read_delim("2016.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
-
-icfes_x2017 <- read_delim("2017.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
-
-icfes_x2018 <- read_delim("2018.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
-
-icfes_x2019 <- read_delim("2019.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
-
-icfes_x2020 <- read_delim("2020.txt", delim = "/", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
-
-# Vamos a Uniformizar los Datos
-
-icfes_2016$nivel1 <- as.character(icfes_2016$nivel1)
-icfes_x2017$nivel1 <- as.character(icfes_x2017$nivel1)
-icfes_x2018$nivel1 <- as.character(icfes_x2018$nivel1)
-icfes_x2019$nivel1 <- as.character(icfes_x2019$nivel1)
-icfes_x2020$nivel1 <- as.character(icfes_x2020$nivel1)
-
-
-## Combinamos los Archivos
-
-combined_data <- bind_rows(icfes_2016, icfes_x2017, icfes_x2018, icfes_x2019, icfes_x2020)
 
 
 
