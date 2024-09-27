@@ -19,7 +19,7 @@ library(tidyr)
 # SRPA_3 
 # ================================================
 
-SRPA_3 <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/SRPA_3.csv")
+SRPA_4 <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/SRPA_4.csv")
 
 denominador_ICBF <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/denominador_ICBF.csv")
 
@@ -47,40 +47,38 @@ denominador_ICBF$anno <- gsub("X", "", denominador_ICBF$anno)
 
 # Convertir a data.table *Melt solo funciona con Data.Table
 
-setDT(SRPA_3)
-
-
+setDT(SRPA_4)
 
 # Aplicamos el melt
 
-SRPA_3 <- melt(SRPA_3, id.vars = c("codmpio", "Departamento"), variable.name = "anno", value.name = "valor")
+SRPA_4 <- melt(SRPA_4, id.vars = c("codmpio", "Departamento"), variable.name = "anno", value.name = "valor")
 
 # Quitamos la "X" en la columna 'anno'
 
-SRPA_3[, anno := gsub("^X", "", anno)]
+SRPA_4[, anno := gsub("^X", "", anno)]
 
 
 # Renombramos Variables
 
-SRPA_3  <- SRPA_3  %>%
+SRPA_4  <- SRPA_4  %>%
   rename(
-    SRPA_3 = valor)
+    SRPA_4 = valor)
 
 # Filtramos las Variables
 
-SRPA_3 <- SRPA_3 %>%
-  select(codmpio, anno, SRPA_3)
+SRPA_4 <- SRPA_4 %>%
+  select(codmpio, anno, SRPA_4)
 
 # Nos Aseguramos que SRPA_3 no sea un string
 
-SRPA_3 <- SRPA_3 %>%
-  mutate(SRPA_3 = as.numeric(SRPA_3))
+SRPA_4 <- SRPA_4 %>%
+  mutate(SRPA_4 = as.numeric(SRPA_4))
 
 # Agrupamos SRPA_2 por codmpio y anno.
 
-SRPA_3 <- SRPA_3 %>%
+SRPA_4 <- SRPA_4 %>%
   group_by(codmpio, anno) %>%
-  summarise(SRPA_3 = sum(SRPA_3, na.rm = TRUE))
+  summarise(SRPA_4 = sum(SRPA_4, na.rm = TRUE))
 
 ###############################################################################
 
@@ -91,23 +89,23 @@ SRPA_3 <- SRPA_3 %>%
 denominador_ICBF <- denominador_ICBF %>%
   mutate(anno = as.integer(anno))
 
-SRPA_3 <- SRPA_3 %>%
+SRPA_4 <- SRPA_4 %>%
   mutate(anno = as.integer(anno))
 
 # Hacer un join entre ambas bases de datos por 'codmpio' y 'anno'
 merged_data <- denominador_ICBF %>%
-  left_join(SRPA_3, by = c("codmpio", "anno"))
+  left_join(SRPA_4, by = c("codmpio", "anno"))
 
 # Calcular la tasa o porcentaje SRPA_1 / ingresos_totales
 
-SRPA_3 <- merged_data %>%
-  mutate(tasa = (SRPA_3 / ingresos_totales) * 100)
+SRPA_4 <- merged_data %>%
+  mutate(tasa = (SRPA_4 / ingresos_totales) * 100)
 
 
 # ================================================
 # Exportar el resultado a un archivo Excel
 # ================================================
 
-write.xlsx(SRPA_3, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_9.3.xlsx", colNames = TRUE)
+write.xlsx(SRPA_4, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_9.4.xlsx", colNames = TRUE)
 
 # Fin del Código
