@@ -1,7 +1,6 @@
 
-
 # ================================================
-# YA 9.1 ICBF 	Adolescentes entre 14 y 17 años en el Sistema de Responsabilidad Penal Adolescente que ingresan al ICBF para los cuales se determina una medida no privativa de la libertad.
+# YA 9.3 ICBF Cuentan con un programa de educación 
 # ================================================
 # Librerías y Paquetes
 
@@ -15,14 +14,11 @@ library(openxlsx)
 library(stringr)
 library(tidyr)
 
-
-# =========  SRPA_1
-
 # ================================================
-# Cargar datos
+# SRPA_3 
 # ================================================
 
-SRPA_1 <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/SRPA_1.csv")
+SRPA_3 <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/SRPA_3.csv")
 
 denominador_ICBF <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/denominador_ICBF.csv")
 
@@ -31,6 +27,7 @@ denominador_ICBF <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/denominado
 
 
 # Convertir de formato wide a long para las columnas X2015 a X2023
+
 denominador_ICBF <- denominador_ICBF%>%
   pivot_longer(cols = X2015:X2023,  # Especificar las columnas que quieres convertir
                names_to = "anno",    # El nombre de la columna que contendrá los nombres de las columnas originales
@@ -41,62 +38,75 @@ denominador_ICBF <- denominador_ICBF%>%
 denominador_ICBF$anno <- gsub("X", "", denominador_ICBF$anno)
 
 
-
--------### Ajustamos el Numerador SRPA_1
 # ================================================
-# Ajustamos el Nombre de las Variables
+# Ajustamos el Nombre de las Variable de kla Base SRPA_3
 # ================================================
 
-SRPA_1  <- SRPA_1  %>%
+# Debemos Cambiar la estructura de wide a long 
+
+# Convertir a data.table *Melt solo funciona con Data.Table
+
+setDT(SRPA_3)
+
+
+
+# Aplicamos el melt
+
+SRPA_3 <- melt(SRPA_3, id.vars = c("codmpio", "Departamento"), variable.name = "anno", value.name = "valor")
+
+# Quitamos la "X" en la columna 'anno'
+
+SRPA_3[, anno := gsub("^X", "", anno)]
+
+
+# Renombramos Variables
+
+SRPA_3  <- SRPA_3  %>%
   rename(
-    SRPA_1 = `BENEFICIARIOS`,  
-    anno = VIGENCIA )
+    SRPA_3 = valor)
 
 # Filtramos las Variables
 
-SRPA_1 <- SRPA_1 %>%
-  select(codmpio, anno, SRPA_1)
+SRPA_3 <- SRPA_3 %>%
+  select(codmpio, anno, SRPA_3)
 
-# Nos Aseguramos que SRPA_1 no sea un string
+# Nos Aseguramos que SRPA_3 no sea un string
 
-SRPA_1 <- SRPA_1 %>%
-  mutate(SRPA_1 = as.numeric(SRPA_1))
+SRPA_3 <- SRPA_3 %>%
+  mutate(SRPA_3 = as.numeric(SRPA_3))
 
-# Agrupamos SRPA_1 por codmpio y anno.
+# Agrupamos SRPA_2 por codmpio y anno.
 
-SRPA_1 <- SRPA_1 %>%
+SRPA_3 <- SRPA_3 %>%
   group_by(codmpio, anno) %>%
-  summarise(SRPA_1 = sum(SRPA_1, na.rm = TRUE))
+  summarise(SRPA_3 = sum(SRPA_3, na.rm = TRUE))
 
 ###############################################################################
 
-## Vamos a construir el Porcentaje
+
 
 
 # Convertir 'anno' en ambas bases de datos a integer
 denominador_ICBF <- denominador_ICBF %>%
   mutate(anno = as.integer(anno))
 
-SRPA_1 <- SRPA_1 %>%
+SRPA_3 <- SRPA_3 %>%
   mutate(anno = as.integer(anno))
 
 # Hacer un join entre ambas bases de datos por 'codmpio' y 'anno'
 merged_data <- denominador_ICBF %>%
-  left_join(SRPA_1, by = c("codmpio", "anno"))
+  left_join(SRPA_3, by = c("codmpio", "anno"))
 
 # Calcular la tasa o porcentaje SRPA_1 / ingresos_totales
 
-SRPA_1 <- merged_data %>%
-  mutate(tasa = (SRPA_1 / ingresos_totales) * 100)
+SRPA_3 <- merged_data %>%
+  mutate(tasa = (SRPA_3 / ingresos_totales) * 100)
 
 
 # ================================================
 # Exportar el resultado a un archivo Excel
 # ================================================
 
-write.xlsx(SRPA_1, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_9.1.xlsx", colNames = TRUE)
+write.xlsx(SRPA_3, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_9.3.xlsx", colNames = TRUE)
 
 # Fin del Código
-
-
-
