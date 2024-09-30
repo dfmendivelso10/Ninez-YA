@@ -15,6 +15,7 @@ library(readxl)
 library(stringr)
 
 
+# Cargamos Base menores 5 años
 
 # Cargamos Nuestra Base YA_4.2
 
@@ -22,7 +23,7 @@ YA_4.2 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_4.2
 
 # Borramos la Variable Total General
 
-YA_4.2 <- YA_4.2[ , -22]
+YA_4.2 <- YA_4.2[ , -21]
 
 # Separamos el CODMPIO del Nombre del Municipio
 
