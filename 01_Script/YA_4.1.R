@@ -12,6 +12,7 @@ library(readxl)
 library(stringr)
 
 
+# Cargamos Base menores 5 años
 
 # Cargamos Nuestra Base YA_4.1
 
