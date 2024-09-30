@@ -19,7 +19,7 @@ YA_4.1 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_4.1
 
 # Borramos la Variable Total General
 
-YA_4.1 <- YA_4.1[ , -22]
+YA_4.1 <- YA_4.1[ , -21]
 
 # Separamos el CODMPIO del Nombre del Municipio
 
