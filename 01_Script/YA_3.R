@@ -92,21 +92,21 @@ YA_3.11_VF <- subset(educ_inicial, select = c("anno", "codmpio","desercion_media
 # Exportamos Data Sets
 # ================================================
 
-write.xlsx(YA_3.4_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.4_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_3.4_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.4.xlsx", col_names = TRUE)
 
-write.xlsx(YA_3.5_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.5_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_3.5_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.5.xlsx", col_names = TRUE)
 
-write.xlsx(YA_3.6_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.6_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_3.6_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.6.xlsx", col_names = TRUE)
 
-write.xlsx(YA_3.7_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.7_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_3.7_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.7.xlsx", col_names = TRUE)
 
-write.xlsx(YA_3.8_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.8_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_3.8_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.8.xlsx", col_names = TRUE)
 
-write.xlsx(YA_3.9_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.9_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_3.9_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.9.xlsx", col_names = TRUE)
 
-write.xlsx(YA_3.10_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.10_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_3.10_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.10.xlsx", col_names = TRUE)
 
-write.xlsx(YA_3.11_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.11_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_3.11_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.11.xlsx", col_names = TRUE)
 
 
 
