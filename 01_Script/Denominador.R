@@ -145,7 +145,7 @@ write.xlsx(menores_1_2020_2030,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Proce
 menores_1_años <- bind_rows(menores_1_2005_2019, menores_1_2020_2030)
 menores_5_años <- bind_rows(menores_5_2005_2009, menores_5_2020_2030)
 menores_18_años <- bind_rows(menores_18_2005_2009, menores_18_2020_2030)
-
+nacidos <- 
 ## Exportamos los Archivos
 
 write.xlsx(menores_1_años,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_1_años.xlsx", col_names = TRUE)
