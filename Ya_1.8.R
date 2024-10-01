@@ -17,7 +17,7 @@ library(stringr)
 
 YA_1.8 <- read.xlsx("D:/Users/enflujo/Documents/GitHub/Ninez-YA/02_RAW-Data/menores_1_año.xlsx" )
 
-menores_1_años <- read.xlsx("D:/Users/enflujo/Documents/GitHub/Ninez-YA/03_Process/menores_1_años.xlsx")
+nacidos <- read.xlsx("D:/Users/enflujo/Documents/GitHub/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
 
 
 # Vamos a limpiar el numerador 
@@ -44,6 +44,29 @@ YA_1.8 <- YA_1.8 %>%
 
 head(YA_1.8)
 
+#------------------------------------------
+# Vamos a limpiar el denominador
+#------------------------------------------
+
+nacidos <- nacidos[ , -21]
+
+# Separamos el CODMPIO del Nombre del Municipio
+
+nacidos$codmpio <- str_replace(nacidos$codmpio, " - .*", "")
+
+
+# Organizamos la Base de Datos, estos están en Wide, de manera que
+# los vamos a convertir a Longer.
+
+nacidos <- nacidos %>%
+  pivot_longer(
+    cols = starts_with("20"), # Seleccionamos las columnas que empiezan con "20" (años desde 2000)
+    names_to = "anno", # Nuevo nombre de columna para los nombres de las columnas originales
+    values_to = "nacidos" # Nuevo nombre de columna para los valores
+  )
+
+
+
 # ====================================================
 # Sección: Merge Data  
 # ====================================================
@@ -53,26 +76,33 @@ head(YA_1.8)
 class(YA_1.8$codmpio)
 class(YA_1.8$anno)
 class(YA_1.8$mortalidad_menores_1_año) # Podemos hacerlo paara cada una de las variables
-class(menores_1_años$codmpio)
-class(menores_1_años$anno)
-class(menores_1_años$total_menores_1)
+class(nacidos$codmpio)
+class(nacidos$anno)
+class(nacidos$nacidos)
 
 # Cambiamos de String a Numeric
 
-YA_1.5 <- YA_1.5 %>%
+YA_1.8 <- YA_1.8 %>%
   mutate(codmpio = as.numeric(codmpio))
 
-YA_1.5 <- YA_1.5 %>%
+YA_1.8 <- YA_1.8 %>%
   mutate(anno = as.numeric(anno))
+
+nacidos <- nacidos %>%
+  mutate(codmpio = as.numeric(codmpio))
+
+nacidos <- nacidos %>%
+  mutate(anno = as.numeric(anno))
+
 
 # Realizamos el Inner Join * Cargamos el DataSet nacidos_vivos
 
-YA_1.5_VF <- inner_join(menores_5_años, YA_1.5, by = c("codmpio","anno"))
+YA_1.8 <- inner_join(nacidos, YA_1.8, by = c("codmpio","anno"))
 
 # Creamos la Tasa de Mortalidad por Desnutricion Aguda en Menores
 
-YA_1.5_VF <- YA_1.5_VF %>% 
-  mutate(tasa_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5)* 100000) 
+YA_1.8 <- YA_1.8F %>% 
+  mutate(tasa_mortalidad_memores_1_año = (mortalidad_menores_1_año / total_menores_1)* 1000) 
 
 
 # Exportamos la Versión Final de Nuestro Indicador
