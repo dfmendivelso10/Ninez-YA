@@ -4,7 +4,7 @@
 # ================================================
 # Librerías y Paquetes
 
-install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr", "data.table"))
+install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr", "data.table", "data.table"))
 
 
 library(readxl)
@@ -44,14 +44,8 @@ denominador_ICBF$anno <- gsub("X", "", denominador_ICBF$anno)
 
 # Debemos Cambiar la estructura de wide a long 
 
-# Convertir a data.table *Melt solo funciona con Data.Table
-
-setDT(SRPA_3)
-
-
-
 # Aplicamos el melt
-
+setDT(SRPA_3)
 SRPA_3 <- melt(SRPA_3, id.vars = c("codmpio", "Departamento"), variable.name = "anno", value.name = "valor")
 
 # Quitamos la "X" en la columna 'anno'
@@ -62,8 +56,7 @@ SRPA_3[, anno := gsub("^X", "", anno)]
 # Renombramos Variables
 
 SRPA_3  <- SRPA_3  %>%
-  rename(
-    SRPA_3 = valor)
+  rename(SRPA_3 = valor)
 
 # Filtramos las Variables
 
@@ -84,8 +77,6 @@ SRPA_3 <- SRPA_3 %>%
 ###############################################################################
 
 
-
-
 # Convertir 'anno' en ambas bases de datos a integer
 denominador_ICBF <- denominador_ICBF %>%
   mutate(anno = as.integer(anno))
@@ -100,7 +91,8 @@ merged_data <- denominador_ICBF %>%
 # Calcular la tasa o porcentaje SRPA_1 / ingresos_totales
 
 SRPA_3 <- merged_data %>%
-  mutate(tasa = (SRPA_3 / ingresos_totales) * 100)
+  mutate(tasa = (SRPA_3 / ingresos_totales) * 100) %>%
+  rename(coddepto = codmpio )
 
 
 # ================================================

@@ -81,8 +81,8 @@ merged_data <- denominador_ICBF %>%
 # Calcular la tasa o porcentaje SRPA_1 / ingresos_totales
 
 SRPA_2 <- merged_data %>%
-  mutate(tasa = (SRPA_2 / ingresos_totales) * 100)
-
+  mutate(tasa = (SRPA_2 / ingresos_totales) * 100) %>%
+rename(coddepto = codmpio )
 
 # ================================================
 # Exportar el resultado a un archivo Excel
