@@ -109,7 +109,7 @@ YA_1.8 <- inner_join(nacidos, YA_1.8, by = c("codmpio","anno"))
 # Creamos la Tasa de Mortalidad por Desnutricion Aguda en Menores
 
 YA_1.8 <- YA_1.8 %>% 
-  mutate(tasa_mortalidad_memores_1_año = (mortalidad_menores_1_año / nacidos)* 1000) # Esto es una tasa x 1000 nacidos vivos
+  mutate(tasa_mortalidad_menores_1_año = (mortalidad_menores_1_año / nacidos)* 1000) # Esto es una tasa x 1000 nacidos vivos
 
 
 # Exportamos la Versión Final de Nuestro Indicador
