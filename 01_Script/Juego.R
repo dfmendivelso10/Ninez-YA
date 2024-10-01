@@ -36,4 +36,5 @@ porcentaje_ponderado <- ECV_2023 %>%
   mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100) %>%  # Calcular el porcentaje
   ungroup()  # Desagrupar el resultado final
 
-porcentaje_ponderado <-  porcentaje_ponderado %>%  mutate(porcentaje= porcentaje * 100)
+
+write.xlsx(porcentaje_ponderado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/juego.xlsx", col_names = TRUE)
