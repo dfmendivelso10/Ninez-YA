@@ -40,9 +40,12 @@ YA_1.8 <- YA_1.8 %>%
     values_to = "mortalidad_menores_1_año" # Nuevo nombre de columna para los valores
   )
 
-# Podemos validar el formato Long
 
-head(YA_1.8)
+# Borramos Total General de YA_1.8
+
+YA_1.8 <- YA_1.8 %>%
+  filter(codmpio != "Total general")
+
 
 #------------------------------------------
 # Vamos a limpiar el denominador
@@ -65,6 +68,10 @@ nacidos <- nacidos %>%
     values_to = "nacidos" # Nuevo nombre de columna para los valores
   )
 
+# Borramos Total General de Codmpio
+
+nacidos <- nacidos %>%
+  filter(codmpio != "Total general")
 
 
 # ====================================================
@@ -101,12 +108,12 @@ YA_1.8 <- inner_join(nacidos, YA_1.8, by = c("codmpio","anno"))
 
 # Creamos la Tasa de Mortalidad por Desnutricion Aguda en Menores
 
-YA_1.8 <- YA_1.8F %>% 
-  mutate(tasa_mortalidad_memores_1_año = (mortalidad_menores_1_año / total_menores_1)* 1000) 
+YA_1.8 <- YA_1.8 %>% 
+  mutate(tasa_mortalidad_memores_1_año = (mortalidad_menores_1_año / nacidos)* 1000) # Esto es una tasa x 1000 nacidos vivos
 
 
 # Exportamos la Versión Final de Nuestro Indicador
 
-write.xlsx(YA_1.5_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_1.5.xlsx", col_names = TRUE)
+write.xlsx(YA_1.8, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.8.xlsx", col_names = TRUE)
 
 # Fin del Código
