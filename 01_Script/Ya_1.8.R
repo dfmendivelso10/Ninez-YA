@@ -15,9 +15,9 @@ library(stringr)
 
 # Vamos a Cargar las Bases de Datos
 
-YA_1.8 <- read.xlsx("D:/Users/enflujo/Documents/GitHub/Ninez-YA/02_RAW-Data/menores_1_año.xlsx" )
+YA_1.8 <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/menores_1_año.xlsx" )
 
-nacidos <- read.xlsx("D:/Users/enflujo/Documents/GitHub/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
+nacidos <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
 
 
 # Vamos a limpiar el numerador 
