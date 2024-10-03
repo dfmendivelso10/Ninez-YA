@@ -60,13 +60,13 @@ YA_2.4_VF <- subset(educ_inicial, select = c("anno", "codmpio","desercion_transi
 # Exportamos Data Sets
 # ================================================
 
-write.xlsx(YA_2.1_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.1_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_2.1_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.1.xlsx", col_names = TRUE)
 
-write.xlsx(YA_2.2_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.2_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_2.2_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.2.xlsx", col_names = TRUE)
 
-write.xlsx(YA_2.3_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.3_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_2.3_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.3.xlsx", col_names = TRUE)
 
-write.xlsx(YA_2.4_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.4_VF.xlsx", col_names = TRUE)
+write.xlsx(YA_2.4_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.4.xlsx", col_names = TRUE)
 
 
 

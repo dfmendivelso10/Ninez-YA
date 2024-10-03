@@ -82,9 +82,6 @@ SRPA_4 <- SRPA_4 %>%
 
 ###############################################################################
 
-
-
-
 # Convertir 'anno' en ambas bases de datos a integer
 denominador_ICBF <- denominador_ICBF %>%
   mutate(anno = as.integer(anno))
@@ -99,7 +96,8 @@ merged_data <- denominador_ICBF %>%
 # Calcular la tasa o porcentaje SRPA_1 / ingresos_totales
 
 SRPA_4 <- merged_data %>%
-  mutate(tasa = (SRPA_4 / ingresos_totales) * 100)
+  mutate(tasa = (SRPA_4 / ingresos_totales) * 100)%>%
+  rename(coddepto = codmpio )
 
 
 # ================================================
