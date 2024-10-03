@@ -1,5 +1,11 @@
 
 
+# ============================================================
+# YA 5. Juego
+# ============================================================
+
+install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr", "lubridate"))
+
 # Paquetes
 
 library(readxl)
@@ -13,7 +19,7 @@ library(tidyr)
 
 main_2023 <- read_dta("Downloads/Variables diseno muestral/Variables diseño muestral.DTA")
 
-atencion_2023 <- read_dta("Downloads/Atencion integral de los ninos y ninas menores de 5 anos/Atención integral de los niños y niñas menores de 5 años.DTA")
+atencion_2023 <- read_dta("D:/enflujo/Downloads/juego/vivienda_2018.dta")
 
 
 
