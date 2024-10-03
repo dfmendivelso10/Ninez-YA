@@ -1,0 +1,118 @@
+# ============================================================
+# YA 1.7 Tasa de Mortalidad Neonatal
+# ============================================================
+
+# Librerías y Paquetes
+
+install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr", "lubridate"))
+
+
+library(tidyr)
+library(dplyr)
+library(openxlsx)
+library(readxl)
+library(stringr)
+
+# Vamos a Cargar las Bases de Datos
+
+YA_1.7 <- read.xlsx("D:/Users/enflujo/Documents/GitHub/Ninez-YA/02_RAW-Data/neonatal.xlsx" )
+
+nacidos <- read.xlsx("D:/Users/enflujo/Documents/GitHub/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
+
+
+# Vamos a limpiar el numerador 
+
+# Borramos la Variable Total General
+
+YA_1.7 <- YA_1.7[ , -21]
+
+# Separamos el CODMPIO del Nombre del Municipio
+
+YA_1.7$codmpio <- str_replace(YA_1.7$codmpio, " - .*", "")
+
+# Organizamos la Base de Datos, estos están en Wide, de manera que
+# los vamos a convertir a Longer.
+
+YA_1.7 <- YA_1.7 %>%
+  pivot_longer(
+    cols = starts_with("20"), # Seleccionamos las columnas que empiezan con "20" (años desde 2000)
+    names_to = "anno", # Nuevo nombre de columna para los nombres de las columnas originales
+    values_to = "mortalidad_neonatal" # Nuevo nombre de columna para los valores
+  )
+
+
+# Borramos Total General de YA_1.7
+
+YA_1.7 <- YA_1.7 %>%
+  filter(codmpio != "Total general")
+
+
+#------------------------------------------
+# Vamos a limpiar el denominador
+#------------------------------------------
+
+
+# Separamos el CODMPIO del Nombre del Municipio
+
+nacidos$codmpio <- str_replace(nacidos$codmpio, " - .*", "")
+
+
+# Organizamos la Base de Datos, estos están en Wide, de manera que
+# los vamos a convertir a Longer.
+
+nacidos <- nacidos %>%
+  pivot_longer(
+    cols = starts_with("20"), # Seleccionamos las columnas que empiezan con "20" (años desde 2000)
+    names_to = "anno", # Nuevo nombre de columna para los nombres de las columnas originales
+    values_to = "nacidos" # Nuevo nombre de columna para los valores
+  )
+
+# Borramos Total General de Codmpio
+
+nacidos <- nacidos %>%
+  filter(codmpio != "Total general")
+
+
+# ====================================================
+# Sección: Merge Data  
+# ====================================================
+
+# Verificamos la Estructura de los Datos, por ejemplo
+
+class(YA_1.7$codmpio)
+class(YA_1.7$anno)
+class(YA_1.7$mortalidad_menores_1_año) # Podemos hacerlo paara cada una de las variables
+class(nacidos$codmpio)
+class(nacidos$anno)
+class(nacidos$nacidos)
+
+# Cambiamos de String a Numeric
+
+YA_1.7 <- YA_1.7 %>%
+  mutate(codmpio = as.numeric(codmpio))
+
+YA_1.7 <- YA_1.7 %>%
+  mutate(anno = as.numeric(anno))
+
+nacidos <- nacidos %>%
+  mutate(codmpio = as.numeric(codmpio))
+
+nacidos <- nacidos %>%
+  mutate(anno = as.numeric(anno))
+
+
+# Realizamos el Inner Join * Cargamos el DataSet nacidos_vivos
+
+YA_1.7 <- inner_join(nacidos, YA_1.7, by = c("codmpio","anno"))
+
+# Creamos la Tasa de Mortalidad por Desnutricion Aguda en Menores
+
+YA_1.7 <- YA_1.7 %>% 
+  mutate(tasa_mortalidad_neonatal = (mortalidad_neonatal / nacidos)* 1000) # Esto es una tasa x 1000 nacidos vivos
+
+
+# Exportamos la Versión Final de Nuestro Indicador
+
+write.xlsx(YA_1.7, "D:/Users/enflujo/Documents/GitHub/Ninez-YA/03_Process/YA_1.7.XLSX", col_names = TRUE)
+
+# Fin del Código
