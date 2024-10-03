@@ -113,6 +113,6 @@ YA_1.7 <- YA_1.7 %>%
 
 # Exportamos la Versión Final de Nuestro Indicador
 
-write.xlsx(YA_1.7, "D:/Users/enflujo/Documents/GitHub/Ninez-YA/03_Process/YA_1.7.XLSX", col_names = TRUE)
+write.xlsx(YA_1.7, "D:/Users/enflujo/Documents/GitHub/Ninez-YA/03_Process/YA_1.7.xlsx", col_names = TRUE)
 
 # Fin del Código
