@@ -75,7 +75,7 @@ YA_1.3_VF <- YA_1.3_VF %>%
 
 # Exportamos la Versión Final de Nuestro Indicador
 
-write.xlsx(YA_1.3_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/VF_YA_1.3.xlsx", col_names = TRUE)
+write.xlsx(YA_1.3_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.3.xlsx", col_names = TRUE)
 
 # Fin del Código
 
