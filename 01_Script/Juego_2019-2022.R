@@ -93,8 +93,9 @@ ecv_2019 <- ecv_2019 %>%
   group_by(P1_DEPARTAMENTO, P51) %>%  # Agrupar por coddepto y categoría de P51
   summarise(frecuencia_ponderada = sum(FEX_C, na.rm = TRUE)) %>%  # Calcular la suma ponderada
   mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100) %>%  # Calcular el porcentaje
-  ungroup() %>% 
-  select()# Desagrupar el resultado final
+  ungroup()
+
+   select()# Desagrupar el resultado final
 
 ecv_2020 <- ecv_2020 %>%
   group_by(P1_DEPARTAMENTO, P51) %>%  # Agrupar por coddepto y categoría de P51
