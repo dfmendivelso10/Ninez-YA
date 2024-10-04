@@ -112,6 +112,17 @@ YA_1.8 <- YA_1.8 %>%
   mutate(tasa_mortalidad_menores_1_año = (mortalidad_menores_1_año / nacidos)* 1000) # Esto es una tasa x 1000 nacidos vivos
 
 
+YA_1.8 <- YA_1.8 %>%
+  mutate(
+    # Calcular la tasa de mortalidad neonatal corregida
+    tasa_mortalidad_menores_1_año= ifelse(
+      nacidos > 0 & mortalidad_menores_1_año <= nacidos,  # Calcular tasa solo si nacidos > 0 y mortalidad_neonatal <= nacidos
+      (mortalidad_menores_1_año / nacidos) * 1000,        # Fórmula de la tasa por cada 1000 nacidos
+      NA                                            # Asignar NA si no se cumple la condición
+    )
+  )
+
+
 # Exportamos la Versión Final de Nuestro Indicador
 
 write.xlsx(YA_1.8, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.8.xlsx", col_names = TRUE)

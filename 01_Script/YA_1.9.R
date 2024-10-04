@@ -74,6 +74,16 @@ YA_1.9 <- YA_1.9 %>%
   mutate(tasa_mortalidad_desnutricion_5_años = (mortalidad_desnutricion_5 / total_menores_5)* 1000) # Esto es una tasa x 1000 nacidos vivos
 
 
+YA_1.9 <- YA_1.9 %>%
+  mutate(
+    # Calcular la tasa de mortalidad neonatal corregida
+    tasa_mortalidad_desnutricion_5_años = ifelse(
+      total_menores_5  > 0 & mortalidad_desnutricion_5 <= total_menores_5 ,  # Calcular tasa solo si total_menores_5 > 0 y mortalidad_neonatal <= total_menores_5 
+      (mortalidad_desnutricion_5 / total_menores_5 ) * 100000,        # Fórmula de la tasa por cada 100000
+      NA                                            # Asignar NA si no se cumple la condición
+    )
+  )
+
 # Exportamos la Versión Final de Nuestro Indicador
 
 write.xlsx(YA_1.9, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.9.xlsx", col_names = TRUE)

@@ -15,9 +15,9 @@ library(stringr)
 
 # Vamos a Cargar las Bases de Datos
 
-YA_1.7 <- read.xlsx("D:/Users/enflujo/Documents/GitHub/Ninez-YA/02_RAW-Data/neonatal.xlsx" )
+YA_1.7 <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/neonatal.xlsx" )
 
-nacidos <- read.xlsx("D:/Users/enflujo/Documents/GitHub/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
+nacidos <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
 
 
 # Vamos a limpiar el numerador 
@@ -107,12 +107,19 @@ YA_1.7 <- inner_join(nacidos, YA_1.7, by = c("codmpio","anno"))
 
 # Creamos la Tasa de Mortalidad por Desnutricion Aguda en Menores
 
-YA_1.7 <- YA_1.7 %>% 
-  mutate(tasa_mortalidad_neonatal = (mortalidad_neonatal / nacidos)* 1000) # Esto es una tasa x 1000 nacidos vivos
+# Crear una nueva variable 'tasa_mortalidad_neonatal_corregida' sin alterar las variables originales
+YA_1.7 <- YA_1.7 %>%
+  mutate(
+    # Calcular la tasa de mortalidad neonatal corregida
+    tasa_mortalidad_neonatal= ifelse(
+      nacidos > 0 & mortalidad_neonatal <= nacidos,  # Calcular tasa solo si nacidos > 0 y mortalidad_neonatal <= nacidos
+      (mortalidad_neonatal / nacidos) * 1000,        # Fórmula de la tasa por cada 1000 nacidos
+      NA                                            # Asignar NA si no se cumple la condición
+    )
+  )
 
 
-# Exportamos la Versión Final de Nuestro Indicador
 
-write.xlsx(YA_1.7, "D:/Users/enflujo/Documents/GitHub/Ninez-YA/03_Process/YA_1.7.xlsx", col_names = TRUE)
+write.xlsx(YA_1.7, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.7.xlsx", col_names = TRUE)
 
 # Fin del Código
