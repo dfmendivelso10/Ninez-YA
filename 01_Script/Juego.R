@@ -17,9 +17,9 @@ library(tidyr)
 
 
 
-main_2023 <- read_dta("Downloads/Variables diseno muestral/Variables diseño muestral.DTA")
+main_2023 <- read_dta("Downloads/Variables diseno muestral/muestral_2023.DTA")
 
-atencion_2023 <- read_dta("D:/enflujo/Downloads/juego/vivienda_2018.dta")
+atencion_2023 <- read_dta("D:/enfluj.dta")
 
 
 
