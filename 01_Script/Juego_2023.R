@@ -37,11 +37,14 @@ ecv_2023 <- integral_2023 %>%
 
 # Calcular el porcentaje ponderado de cada categoría de P51 para cada codmpio
 
-ecv_2023 <- ECV_2023 %>%
+ecv_2023 <- ecv_2023  %>%
   group_by(codmpio, P51) %>%  # Agrupar por codmpio y categoría de P51
   summarise(frecuencia_ponderada = sum(FEX_C.x, na.rm = TRUE)) %>%  # Calcular la suma ponderada
   mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100) %>%  # Calcular el porcentaje
   ungroup()  # Desagrupar el resultado final
 
+# Renombramos codmpio a coddepto,la razón, acá tenemos desagregación departamental no municipal.
+ecv_2023 <- ecv_2023 %>%
+  rename(coddepto = codmpio)                    
 
 write.xlsx(porcentaje_ponderado, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/juego.xlsx", col_names = TRUE)

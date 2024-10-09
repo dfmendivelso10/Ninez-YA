@@ -92,29 +92,115 @@ ecv_2022 <- integral_2022 %>%
 ecv_2019 <- ecv_2019 %>%
   group_by(P1_DEPARTAMENTO, P51) %>%  # Agrupar por coddepto y categoría de P51
   summarise(frecuencia_ponderada = sum(FEX_C, na.rm = TRUE)) %>%  # Calcular la suma ponderada
-  mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100) %>%  # Calcular el porcentaje
+  mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100, # Calcular el porcentaje
+         anno = 2019) %>%  
   ungroup()
 
-   select()# Desagrupar el resultado final
 
 ecv_2020 <- ecv_2020 %>%
   group_by(P1_DEPARTAMENTO, P51) %>%  # Agrupar por coddepto y categoría de P51
   summarise(frecuencia_ponderada = sum(FEX_C, na.rm = TRUE)) %>%  # Calcular la suma ponderada
-  mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100) %>%  # Calcular el porcentaje
+  mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100, # Calcular el porcentaje
+         anno = 2020) %>%  
   ungroup()  # Desagrupar el resultado final
 
 ecv_2021 <- ecv_2021 %>%
   group_by(P1_DEPARTAMENTO, P51) %>%  # Agrupar por coddepto y categoría de P51
   summarise(frecuencia_ponderada = sum(FEX_C, na.rm = TRUE)) %>%  # Calcular la suma ponderada
-  mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100) %>%  # Calcular el porcentaje
+  mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100, # Calcular el porcentaje
+         anno = 2021) %>%  
   ungroup()  # Desagrupar el resultado final
 
 ecv_2022 <- ecv_2022 %>%
   group_by(P1_DEPARTAMENTO, P51) %>%  # Agrupar por coddepto y categoría de P51
   summarise(frecuencia_ponderada = sum(FEX_C, na.rm = TRUE)) %>%  # Calcular la suma ponderada
-  mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100) %>%  # Calcular el porcentaje
+  mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100, # Calcular el porcentaje
+         anno = 2022) %>%  
   ungroup()  # Desagrupar el resultado final
+
+# Vamos a agrupar estos años
+
+# Primero vamos a eliminar los labels en caso de que haya un conflicto:
+# Quitar labels de cada base de datos individualmente
+
+ecv_2019 <- haven::zap_labels(ecv_2019)
+ecv_2020 <- haven::zap_labels(ecv_2020)
+ecv_2021 <- haven::zap_labels(ecv_2021)
+ecv_2022 <- haven::zap_labels(ecv_2022)
+
+# Hacemos el Append de las Bases de Datos
+
+ecv_2019_2022 <- bind_rows(ecv_2019, ecv_2020, ecv_2021, ecv_2022)
+
+# Ajustamos el nombre de la variable codmpio por coddepto, ya que esta base de datos
+# tiene un nivel de desagregación departamental.
+
+ecv_2019_2022 <- ecv_2019_2022 %>% rename(coddepto = P1_DEPARTAMENTO)
+
+# Limpiamos un poco el envioronment
+
+rm(ecv_2019, ecv_2020, ecv_2021, ecv_2022, integral_2019, integral_2020, integral_2021, integral_2022, main_2019,
+   main_2020, main_2021, main_2022)
+
+# ==================================
+#  ECV - 2023 *Tiene Otra estructura
+# ==================================
+
+main_2023 <- read_dta("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/ECV/muestral_2023.dta")
+
+integral_2023 <- read_dta("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/ECV/integral_2023.dta")
+
+
+# En este paso vamos a delimitar la Base de Datos, además vamos a eliminar los duplicados, en este caso los duplicados  y hacer el join en una sola línea
+
+ecv_2023 <- integral_2023 %>%
+  select(1:6) %>%  # Selecciona las primeras 6 columnas
+  left_join(                                         
+    main_2023 %>% distinct(DIRECTORIO, .keep_all = TRUE),  # Elimina duplicados en `main_2023`
+    by = "DIRECTORIO"
+  ) %>%
+  mutate(codmpio = as.numeric(substr(MPIO, 1, ifelse(nchar(MPIO) >= 2, 2, 1))))  %>% # Crea codmpio tomando los primeros caracteres de MPIO
+  select(5,6,17)
+
+
+# Calcular el porcentaje ponderado de cada categoría de P51 para cada codmpio
+
+ecv_2023 <- ecv_2023  %>%
+  group_by(codmpio, P51) %>%  # Agrupar por codmpio y categoría de P51
+  summarise(frecuencia_ponderada = sum(FEX_C.x, na.rm = TRUE)) %>%  # Calcular la suma ponderada
+  mutate(porcentaje = frecuencia_ponderada / sum(frecuencia_ponderada) * 100, # Calcular el porcentaje
+         anno = 2023) %>%  
+  ungroup()  # Desagrupar el resultado final
+
+# Renombramos codmpio a coddepto,la razón, acá tenemos desagregación departamental no municipal.
+ecv_2023 <- ecv_2023 %>%
+  rename(coddepto = codmpio)                    
+
+# Limpiamos el enviornment
+
+rm(main_2023, integral_2023)
+
+# ==============================================================================
+# Hacemos el Append Final de las Bases de Datos
+# ==============================================================================
+
+# Convertir coddepto a character en ambas bases de datos
+
+ecv_2019_2022$coddepto <- as.character(ecv_2019_2022$coddepto)
+ecv_2023$coddepto <- as.character(ecv_2023$coddepto)
+
+# Unir las bases de datos
+
+ecv_P51 <- bind_rows(ecv_2019_2022, ecv_2023)
+
+# Definimos la Base de datos
+
+ecv_P51 <- ecv_P51 %>% select(c(1,5,2,4))
 
 
 # Exportamos
-write.xlsx(ecv_2019, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/juego.xlsx", col_names = TRUE)
+
+write.xlsx(ecv_P51, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_5.1.xlsx", col_names = TRUE)
+
+
+View(ecv_P51)
