@@ -15,6 +15,9 @@ library(data.table)
 library(readr)
 
 
+sum(is.na(español$promedio_lectura_critica))
+
+
 # Cargamos los Datos
 
 X2016 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2016.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
@@ -54,7 +57,6 @@ X20232 <- as.data.table(X20232)
 
 #======= Limpieza de Datos desde 2016 - 2021
 
-
 # Usar rbindlist para concatenar todas las bases de datos
 saber_11 <- rbindlist(list(X2016, X2017, X2018, X2019, X2020, X2021), fill = TRUE)
 
@@ -81,7 +83,7 @@ saber_11$anno <- substr(saber_11$anno, 1, 4)
 # ================================================
 
 promedios_por_municipio <- saber_11 %>%
-  filter(!is.na(promedio_prueba)) %>% 
+  filter(!is.na(promedio_prueba), !is.na(codmpio)) %>% 
   group_by(anno, codmpio, nombre_prueba) %>%
   summarize(
     promedio_ponderado = sum(promedio_prueba * n_evaluados, na.rm = TRUE) / sum(n_evaluados, na.rm = TRUE)
@@ -101,7 +103,8 @@ datos_wide <- datos_wide %>%
 
 # Renombramos las Variables
 
-datos_wide <- datos_wide %>%
+
+datos_wide_2016_2021 <- datos_wide %>%
   rename(
     promedio_lectura_critica = `LECTURA CRÍTICA`,
     promedio_matematicas = `MATEMÁTICAS`,
@@ -109,6 +112,9 @@ datos_wide <- datos_wide %>%
     promedio_global = total
   )
 
+# Filtramos solo los datos que nos interesan
+
+datos_wide_2016_2021 <- datos_wide_2016_2021 %>% select(, c(1:2,5:8))
 
 # ================================================
 # Limpieza de Datos desde 2022 en adelante
@@ -131,28 +137,36 @@ saber_11_2021_2023  <- rename(saber_11_2021_2023 , codmpio = ESTU_COD_MCPIO_PRES
 saber_11_2021_2023 $anno <- substr(saber_11_2021_2023 $anno, 1, 4)
 
 
+# La variable codmpio en esta base de datos no es float, así que ajustaremos eso
+
+saber_11_2021_2023$codmpio <- as.numeric(saber_11_2021_2023$codmpio)
+
+
 # ====================================================
 # Calculamos el Promedio de la Prueba 2022 en adelante
 # ====================================================
 
-promedios <- saber_11_2021_2023 %>%
+datos_wide_2021_2023 <- saber_11_2021_2023 %>%
+  filter(!is.na(codmpio)) %>%
   group_by(codmpio, anno) %>%
   summarise(
     promedio_lectura_critica = mean(PUNT_LECTURA_CRITICA, na.rm = TRUE),
     promedio_matematicas = mean(PUNT_MATEMATICAS, na.rm = TRUE),
     promedio_sociales_ciudadanas = mean(PUNT_SOCIALES_CIUDADANAS, na.rm = TRUE),
     promedio_global = mean(PUNT_GLOBAL, na.rm = TRUE)
-  ) 
+  )
 
+# Ajustamos el Orden de las variables
 
+datos_wide_2021_2023 <- datos_wide_2021_2023 %>% select(, c(2,1,3,4,5,6))
 
 # ====================================================
 # Unificamos las Bases de Datos 
 # ====================================================
 
-resultados_saber_11 <- rbindlist(list(datos_wide, promedios), fill = TRUE)
+resultados_saber_11 <- rbindlist(list(datos_wide_2016_2021 , datos_wide_2021_2023), fill = TRUE)
 
-rm(datos_wide, promedios, promedios_por_municipio, saber_11, saber_11_2021_2023, X20221, X20222, X20231, X20232)
+rm(datos_wide, promedios, promedios_por_municipio, saber_11, saber_11_2021_2023, X20221, X20222, X20231, X20232, resultados_saber_11)
 
 
 ###########################################################################################################################
@@ -174,9 +188,6 @@ write.xlsx(español, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.1.
 
 write.xlsx(matematicas, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.2.xlsx", col_names = TRUE)
 
-write.xlsx(global, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.2.xlsx", col_names = TRUE)
+write.xlsx(global, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.3.xlsx", col_names = TRUE)
 
-resultados_saber_11 %>%
-  filter(codmpio == 11001) %>%
-  select(promedio_global) %>%
-  print()
+
