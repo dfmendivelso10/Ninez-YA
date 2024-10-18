@@ -23,22 +23,18 @@ tipo_institutcion <-  read.csv("~/Downloads/MEN_ESTABLECIMIENTOS_EDUCATIVOS_PREE
 
 # Primero eliminamos las variables que No Necesitamos
 
-educ_inicial <- educ_inicial %>%
-  select(-3:-8) # Acá Eliminamos las Primeras 6 columnas y la columna número 8
+tipo_institutcion  <- tipo_institutcion  %>%
+  select(1,6,11) # Acá Eliminamos las observaciones que no se necesitan
 
 # Renombrammos algunas variables
 
-educ_inicial <- educ_inicial %>% rename(anno = AÑO)
+tipo_institutcion <- tipo_institutcion %>% rename(anno = AÑO)
 
-educ_inicial <- educ_inicial %>% rename(codmpio = CÓDIGO_MUNICIPIO)
+tipo_institutcion <- tipo_institutcion %>% rename(codmpio = COD_DANE_MUNICIPIO)
 
-educ_inicial <- educ_inicial %>% rename(neta_transicion = COBERTURA_NETA_TRANSICIÓN)
+tipo_institutcion <- tipo_institutcion %>% rename(sector = SECTOR)
 
-educ_inicial <- educ_inicial %>% rename(reprobacion_transicion = REPROBACIÓN_TRANSICIÓN)
 
-educ_inicial <- educ_inicial %>% rename(repitencia_transicion = REPITENCIA_TRANSICIÓN)
-
-educ_inicial <- educ_inicial %>% rename(desercion_transicion = DESERCIÓN_TRANSICIÓN)
 
 # ================================================
 # Creación de Sub - Data Sets
