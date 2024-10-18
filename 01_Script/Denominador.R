@@ -126,6 +126,7 @@ menores_18_años <- bind_rows(menores_18_2005_2019, menores_18_2020_2030)
 
 # Ajustamos Nombre
 
+menores_1_años <- menores_1_años %>% rename(codmpio = MPIO, anno = AÑO)
 menores_5_años <- menores_5_años %>% rename(codmpio = MPIO, anno = AÑO)
 menores_18_años <- menores_18_años %>% rename(codmpio = MPIO, anno = AÑO)
 
