@@ -35,31 +35,19 @@ tipo_institutcion <- tipo_institutcion %>% rename(codmpio = COD_DANE_MUNICIPIO)
 tipo_institutcion <- tipo_institutcion %>% rename(sector = SECTOR)
 
 
+# Calculamos la Cobertura
 
-# ================================================
-# Creación de Sub - Data Sets
-# ================================================
 
-# YA 2.1 Cobertura Neta Transición
+resultado <- tipo_institutcion %>%
+  group_by(anno, codmpio, sector) %>%
+  summarise(conteo = n(), .groups = "drop") %>%
+  group_by(anno, codmpio) %>%
+  mutate(porcentaje = (conteo / sum(conteo)) * 100)
 
-YA_2.1_VF <- subset(educ_inicial, select = c("anno", "codmpio","neta_transicion"))
 
-YA_2.2_VF  <- subset(educ_inicial, select = c("anno", "codmpio","reprobacion_transicion"))
-
-YA_2.3_VF  <- subset(educ_inicial, select = c("anno", "codmpio","repitencia_transicion"))
-
-YA_2.4_VF <- subset(educ_inicial, select = c("anno", "codmpio","desercion_transicion"))
-
-# ================================================
-# Exportamos Data Sets
-# ================================================
+# Exportamos
 
 write.xlsx(YA_2.1_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.1.xlsx", col_names = TRUE)
 
-write.xlsx(YA_2.2_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.2.xlsx", col_names = TRUE)
-
-write.xlsx(YA_2.3_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.3.xlsx", col_names = TRUE)
-
-write.xlsx(YA_2.4_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_2.4.xlsx", col_names = TRUE)
 
 
