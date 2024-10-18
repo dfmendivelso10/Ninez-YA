@@ -19,6 +19,7 @@ library(stringr)
 # Cargamos Nuestra Base YA_1.5
 
 YA_1.5 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_1.5.xlsx")
+menores_5_años <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_5_años.xlsx")
 
 # Borramos la Variable Total General
 
