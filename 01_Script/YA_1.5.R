@@ -15,64 +15,58 @@ library(readxl)
 library(stringr)
 
 
-
-# Cargamos Nuestra Base YA_1.5
-
+# Cargar los datos
 YA_1.5 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_1.5.xlsx")
+
 menores_5_años <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_5_años.xlsx")
 
-# Borramos la Variable Total General
+# Eliminar la columna 'Total General' (suponiendo que es la columna 21)
+YA_1.5 <- YA_1.5[, -21]
 
-YA_1.5 <- YA_1.5[ , -21]
-
-# Separamos el CODMPIO del Nombre del Municipio
-
+# Separar el 'codmpio' del nombre del municipio
 YA_1.5$codmpio <- str_replace(YA_1.5$codmpio, " - .*", "")
 
-# Organizamos la Base de Datos, estos están en Wide, de manera que
-# los vamos a convertir a Longer.
-
+# Convertir la base de datos de formato ancho a formato largo
 YA_1.5 <- YA_1.5 %>%
   pivot_longer(
-    cols = starts_with("20"), # Seleccionamos las columnas que empiezan con "20" (años desde 2000)
-    names_to = "anno", # Nuevo nombre de columna para los nombres de las columnas originales
-    values_to = "desnutricion_menores_5" # Nuevo nombre de columna para los valores
+    cols = starts_with("20"), # Selecciona las columnas que empiezan con "20" (años)
+    names_to = "anno", # Nombre de la nueva columna para los años
+    values_to = "desnutricion_menores_5" # Nombre de la nueva columna para los valores
   )
 
-# Podemos validar el formato Long
-
+# Validar el formato largo
 head(YA_1.5)
 
 # ====================================================
-# Sección: Merge Data  
+# Sección: Unir Datos  
 # ====================================================
 
-# Verificamos la Estructura de los Datos, por ejemplo
+# Verificar la estructura de los datos para asegurar compatibilidad en la unión
+str(YA_1.5)
+str(menores_5_años)
 
-class(YA_1.5$codmpio)
-class(YA_1.5$anno)
-class(YA_1.5$desnutricion_menores_5) # Podemos hacerlo paara cada una de las variables
-class(menores_5_años$codmpio)
-class(menores_5_años$anno)
-class(menores_5_años$total_menores_5)
-
-# Cambiamos de String a Numeric
-
+# Convertir 'codmpio' y 'anno' a tipo numérico para asegurar que coincidan en ambas bases
 YA_1.5 <- YA_1.5 %>%
-  mutate(codmpio = as.numeric(codmpio))
+  mutate(
+    codmpio = as.numeric(codmpio),
+    anno = as.numeric(anno)
+  )
 
-YA_1.5 <- YA_1.5 %>%
-  mutate(anno = as.numeric(anno))
+menores_5_años <- menores_5_años %>%
+  mutate(
+    codmpio = as.numeric(codmpio),
+    anno = as.numeric(anno)
+  )
 
-# Realizamos el Inner Join * Cargamos el DataSet nacidos_vivos
+# Realizar el inner join para unir las bases de datos
+YA_1.5_VF <- inner_join(menores_5_años, YA_1.5, by = c("codmpio", "anno"))
 
-YA_1.5_VF <- inner_join(menores_5_años, YA_1.5, by = c("codmpio","anno"))
-
-# Creamos la Tasa de Mortalidad por Desnutricion Aguda en Menores
-
+# Crear la tasa de mortalidad por desnutrición aguda en menores de 5 años
 YA_1.5_VF <- YA_1.5_VF %>% 
-  mutate(tasa_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5)* 100000) 
+  mutate(tasa_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5) * 100000)
 
+# Mostrar los primeros registros para validar
+head(YA_1.5_VF)
 
 # Exportamos la Versión Final de Nuestro Indicador
 
