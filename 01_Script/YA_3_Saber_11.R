@@ -163,21 +163,23 @@ datos_wide_2021_2023 <- datos_wide_2021_2023 %>% select(, c(2,1,3,4,5,6))
 
 resultados_saber_11 <- rbindlist(list(datos_wide_2016_2021 , datos_wide_2021_2023), fill = TRUE)
 
-rm(datos_wide, promedios, promedios_por_municipio, saber_11, saber_11_2021_2023, X20221, X20222, X20231, X20232, resultados_saber_11)
 
-
+resultados_saber_11 <- resultados_saber_11 %>% rename(lectura = promedio_lectura_critica, matematicas = promedio_matematicas, global = promedio_global, sociales = promedio_sociales_ciudadanas)
 ###########################################################################################################################
 
 ## Ahora creamos los Distintos Ya 
 
 español <- resultados_saber_11 %>%
-  select(anno, codmpio, `promedio_lectura_critica`)
+  select(anno, codmpio, `lectura`)
 
 matematicas <- resultados_saber_11 %>%
-  select(anno, codmpio, `promedio_matematicas`)
+  select(anno, codmpio, `matematicas`)
+
+sociales <- resultados_saber_11 %>%
+  select(anno, codmpio, `sociales`)
 
 global <- resultados_saber_11 %>%
-  select(anno, codmpio, `promedio_global`)
+  select(anno, codmpio, `global`)
 
 ## Exportamos los Datos
 
@@ -185,6 +187,8 @@ write.xlsx(español, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.1.
 
 write.xlsx(matematicas, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.2.xlsx", col_names = TRUE)
 
-write.xlsx(global, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.3.xlsx", col_names = TRUE)
+write.xlsx(sociales, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.3.xlsx", col_names = TRUE)
+
+write.xlsx(global, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_3.4.xlsx", col_names = TRUE)
 
 
