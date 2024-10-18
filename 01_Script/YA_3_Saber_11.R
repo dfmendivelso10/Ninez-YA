@@ -15,32 +15,29 @@ library(data.table)
 library(readr)
 
 
-sum(is.na(español$promedio_lectura_critica))
-
-
 # Cargamos los Datos
 
-X2016 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2016.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
+X2016 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2016.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
 
-X2017 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2017.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
+X2017 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2017.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
 
-X2018 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2018.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
+X2018 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2018.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
 
-X2019 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2019.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
+X2019 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2019.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
 
-X2020 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2020.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
+X2020 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2020.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
 
-X2021 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2021.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
+X2021 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2021.txt", delim = "/", escape_double = FALSE, trim_ws = TRUE)
 
 # Del 2022 en adelante el separador cambia ¬
 
-X20221 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2022.1.txt", delim = "¬", escape_double = FALSE, trim_ws = TRUE)
+X20221 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2022.1.txt", delim = "¬", escape_double = FALSE, trim_ws = TRUE)
 
-X20222 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2022.2.txt", delim = "¬", escape_double = FALSE, trim_ws = TRUE)
+X20222 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2022.2.txt", delim = "¬", escape_double = FALSE, trim_ws = TRUE)
 
-X20231 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2023.1.txt", delim = "¬", escape_double = FALSE, trim_ws = TRUE)
+X20231 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2023.1.txt", delim = "¬", escape_double = FALSE, trim_ws = TRUE)
 
-X20232 <- read_delim("/Users/daniel/Downloads/Raw_DATA/2023.2.txt", delim = "¬", escape_double = FALSE, trim_ws = TRUE)
+X20232 <- read_delim("/Users/daniel/Documents/Raw_ICFES/2023.2.txt", delim = "¬", escape_double = FALSE, trim_ws = TRUE)
 
 ## Convertimos los Datos a data.table * Es más eficiente con el uso de la memoria
 
