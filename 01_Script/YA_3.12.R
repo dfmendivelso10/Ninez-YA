@@ -23,7 +23,7 @@ tipo_institucion <-  read.csv("~/Downloads/MEN_ESTABLECIMIENTOS_EDUCATIVOS_PREES
 
 # Primero eliminamos las variables que No Necesitamos
 
-tipo_institucion  <- tipo_institutcion  %>%
+tipo_institucion  <- tipo_institucion  %>%
   select(1,6,11) # Acá Eliminamos las observaciones que no se necesitan
 
 # Renombrammos algunas variables
@@ -38,7 +38,7 @@ tipo_institucion <- tipo_institucion %>% rename(sector = SECTOR)
 # Calculamos la Cobertura
 
 
-YA_3.12 <- tipo_institutcion %>%
+YA_3.12 <- tipo_institucion %>%
   group_by(anno, codmpio, sector) %>%
   summarise(conteo = n(), .groups = "drop") %>%
   group_by(anno, codmpio) %>%
