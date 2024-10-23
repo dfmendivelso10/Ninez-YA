@@ -18,6 +18,10 @@ library(stringr)
 
 YA_4.1 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_4.1.xlsx")
 
+# Cargamos la Base Menores de 5 años
+
+menores_5_años <- read_excel("~/Documents/GitHub/Ninez-YA/03_Process/menores_5_años.xlsx")
+
 # Borramos la Variable Total General
 
 YA_4.1 <- YA_4.1[ , -21]
@@ -48,7 +52,7 @@ head(YA_4.1)
 
 class(YA_4.1$codmpio)
 class(YA_4.1$anno)
-class(YA_4.1$IRA) # Podemos hacerlo paara cada una de las variables
+class(YA_4.1$EDA) # Podemos hacerlo paara cada una de las variables
 class(menores_5_años$codmpio)
 class(menores_5_años$anno)
 class(menores_5_años$total_menores_5)
@@ -63,9 +67,15 @@ YA_4.1 <- YA_4.1 %>%
 
 # Realizamos el Inner Join
 
-YA_4.1_VF <- inner_join(menores_5_años, YA_4.1, by = c("codmpio","anno"))
+# Asegurarse de que el formato de codmpio sea consistente en ambas bases
 
-# Creamos la Tasa de mortalidad por Infección Respiratoria Aguda (IRA) en menores de 5 años
+menores_5_años$codmpio <- sprintf("%05d", as.numeric(menores_5_años$codmpio))
+YA_4.1$codmpio <- sprintf("%05d", as.numeric(YA_4.1$codmpio))
+
+# Realizar el inner_join
+YA_4.1_VF <- inner_join(menores_5_años, YA_4.1, by = c("codmpio", "anno"))
+
+# Creamos la Tasa de mortalidad por Infección RespEDAtoria Aguda (EDA) en menores de 5 años
 
 YA_4.1_VF <- YA_4.1_VF %>% 
   mutate(tasa_EDA = (EDA / total_menores_5) * 100000)
