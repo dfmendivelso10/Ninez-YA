@@ -25,7 +25,7 @@ denominador_ICBF <- read.csv("~/Documents/GitHub/Ninez-YA/03_Process/ICBF_denomi
 
 
 # ================================================
-# Ajustamos el Nombre de las Variable de kla Base SRPA_3
+# Ajustamos el Nombre de las Variable 
 # ================================================
 
 # Debemos Cambiar la estructura de wide a long 
@@ -54,12 +54,12 @@ SRPA_4  <- SRPA_4  %>%
 SRPA_4 <- SRPA_4 %>%
   select(codmpio, anno, SRPA_4)
 
-# Nos Aseguramos que SRPA_3 no sea un string
+# Nos Aseguramos que SRPA_4 no sea un string
 
 SRPA_4 <- SRPA_4 %>%
   mutate(SRPA_4 = as.numeric(SRPA_4))
 
-# Agrupamos SRPA_2 por codmpio y anno.
+# Agrupamos SRPA_4 por codmpio y anno.
 
 SRPA_4 <- SRPA_4 %>%
   group_by(codmpio, anno) %>%
@@ -75,13 +75,14 @@ SRPA_4 <- SRPA_4 %>%
   mutate(anno = as.integer(anno))
 
 # Hacer un join entre ambas bases de datos por 'codmpio' y 'anno'
+
 merged_data <- denominador_ICBF %>%
   left_join(SRPA_4, by = c("codmpio", "anno"))
 
-# Calcular la tasa o porcentaje SRPA_1 / ingresos_totales
+# Calcular la tasa o porcentaje SRPA_1 / procesos
 
 SRPA_4 <- merged_data %>%
-  mutate(tasa = (SRPA_4 / ingresos_totales) * 100)%>%
+  mutate(tasa = (SRPA_4 / procesos) * 100)%>%
   rename(coddepto = codmpio )
 
 
