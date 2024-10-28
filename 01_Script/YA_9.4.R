@@ -21,7 +21,7 @@ library(tidyr)
 
 SRPA_4 <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/SRPA_4.csv")
 
-denominador_ICBF <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/denominador_ICBF.csv")
+denominador_ICBF <- read.csv("/Documents/GitHub/Ninez-YA/03_Process/ICBF_denominador_General.csv")
 
 
 ### Ajustamos el Denominador 
