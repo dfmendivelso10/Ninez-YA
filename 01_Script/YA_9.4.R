@@ -21,22 +21,7 @@ library(tidyr)
 
 SRPA_4 <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/SRPA_4.csv")
 
-denominador_ICBF <- read.csv("/Documents/GitHub/Ninez-YA/03_Process/ICBF_denominador_General.csv")
-
-
-### Ajustamos el Denominador 
-
-
-# Convertir de formato wide a long para las columnas X2015 a X2023
-
-denominador_ICBF <- denominador_ICBF%>%
-  pivot_longer(cols = X2015:X2023,  # Especificar las columnas que quieres convertir
-               names_to = "anno",    # El nombre de la columna que contendrá los nombres de las columnas originales
-               values_to = "ingresos_totales") # El nombre de la columna que contendrá los valores de las columnas originales
-
-
-# Eliminar la "X" en la columna 'anno' y convertir a número
-denominador_ICBF$anno <- gsub("X", "", denominador_ICBF$anno)
+denominador_ICBF <- read.csv("~/Documents/GitHub/Ninez-YA/03_Process/ICBF_denominador_General.csv")
 
 
 # ================================================
