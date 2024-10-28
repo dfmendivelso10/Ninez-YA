@@ -1,6 +1,6 @@
 
 # ================================================
-# YA 9.3 % Jóvenes que Ingresan al ICBF por trabajo infantil
+# YA 9.3 % Niñas, Niños y Jóvenes que Ingresan al ICBF por trabajo infantil
 # ================================================
 # Librerías y Paquetes
 
@@ -20,26 +20,10 @@ library(tidyr)
 
 SRPA_3 <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/SRPA_3.csv")
 
-denominador_ICBF <- read.csv("~/Documents/GitHub/Ninez-YA/02_RAW-Data/denominador_ICBF.csv")
-
-
-### Ajustamos el Denominador 
-
-
-# Convertir de formato wide a long para las columnas X2015 a X2023
-
-denominador_ICBF <- denominador_ICBF%>%
-  pivot_longer(cols = X2015:X2023,  # Especificar las columnas que quieres convertir
-               names_to = "anno",    # El nombre de la columna que contendrá los nombres de las columnas originales
-               values_to = "ingresos_totales") # El nombre de la columna que contendrá los valores de las columnas originales
-
-
-# Eliminar la "X" en la columna 'anno' y convertir a número
-denominador_ICBF$anno <- gsub("X", "", denominador_ICBF$anno)
-
+denominador_ICBF <- read.csv("~/Documents/GitHub/Ninez-YA/03_Process/ICBF_denominador_General.csv")
 
 # ================================================
-# Ajustamos el Nombre de las Variable de kla Base SRPA_3
+# Ajustamos algunos nombres
 # ================================================
 
 # Debemos Cambiar la estructura de wide a long 
@@ -88,10 +72,10 @@ SRPA_3 <- SRPA_3 %>%
 merged_data <- denominador_ICBF %>%
   left_join(SRPA_3, by = c("codmpio", "anno"))
 
-# Calcular la tasa o porcentaje SRPA_1 / ingresos_totales
+# Calcular la tasa o porcentaje SRPA_1 / procesos
 
 SRPA_3 <- merged_data %>%
-  mutate(tasa = (SRPA_3 / ingresos_totales) * 100) %>%
+  mutate(tasa = (SRPA_3 / procesos) * 100) %>%
   rename(coddepto = codmpio )
 
 
