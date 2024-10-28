@@ -44,7 +44,11 @@ ICBF_Denominador_General = ICBF_Denominador_General.loc[:, columnas_seleccionada
 
 denominador_General = ICBF_Denominador_General.groupby(['anno', 'codmpio'])['procesos'].sum().reset_index()
 
+# Exportamos manualmente con Data.Wrangler
 
-# %% Exportamos el archivo
+# %% Ahora vamos a crear el denominador para los 
+# Adolescentes entre 14 y 17 años en el Sistema de Responsabilidad 
+# Penal Adolescente que ingresan al ICBF para los cuales se 
+# determina una medida no privativa de la libertad.
 
 
