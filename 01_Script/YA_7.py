@@ -20,12 +20,14 @@ import pandas as pd
 
 # Importarmos los datos
 
-gini = pd.read_excel(r'/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_7.2.xlsx')
+gini = pd.read_excel(
+    r'/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_7.2.xlsx')
 
 # ============================================================
 # Vamos a imputar el coddepto para cada uno de los departamentos.
 
-coddepto = pd.read_excel(r'/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/coddepto.xlsx')
+coddepto = pd.read_excel(
+    r'/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/coddepto.xlsx')
 
 
 # Paso 1.Vamos a hacer el join del 'codmpio'
@@ -57,7 +59,8 @@ gini['Departamento'] = gini['Departamento'].replace('BOGOTA D.C.', 'BOGOTA')
 
 # Paso 2. Realizamos el merge para pegar la variable 'codmpio' de la base 'coddepto' a 'gini'
 
-gini = gini.merge(coddepto[['Departamento', 'codmpio']], on='Departamento', how='left')
+gini = gini.merge(coddepto[['Departamento', 'codmpio']],
+                  on='Departamento', how='left')
 
 # Borramos la columna 'Departamento', ya no la necesitamos
 
@@ -77,7 +80,8 @@ gini = gini[['anno', 'coddepto', 'gini']]
 
 # Paso 5. Exportamos la base
 
-gini.to_excel(r'/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_7.1.xlsx', index=False)
+gini.to_excel(
+    r'/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_7.1.xlsx', index=False)
 
 # ============================================================
 # YA 7.2 Incidencia de la Pobreza Monetaria
@@ -86,12 +90,14 @@ gini.to_excel(r'/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_7.1.xlsx',
 # ============================================================
 # Importarmos los datos
 
-pobreza_monetaria = pd.read_excel(r'/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_7.1.xlsx')
+pobreza_monetaria = pd.read_excel(
+    r'/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_7.1.xlsx')
 
 # ============================================================
 # Vamos a imputar el coddepto para cada uno de los departamentos.
 
-coddepto = pd.read_excel(r'/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/coddepto.xlsx')
+coddepto = pd.read_excel(
+    r'/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/coddepto.xlsx')
 
 # Paso 1.Vamos a hacer el join del 'codmpio'
 
@@ -118,11 +124,13 @@ pobreza_monetaria['Departamento'] = (
 )
 
 # Cambiar 'BOGOTA D.C.' a 'BOGOTA' en la columna 'Departamento'
-pobreza_monetaria['Departamento'] = pobreza_monetaria['Departamento'].replace('BOGOTA D.C.', 'BOGOTA')
+pobreza_monetaria['Departamento'] = pobreza_monetaria['Departamento'].replace(
+    'BOGOTA D.C.', 'BOGOTA')
 
 # Paso 2. Realizamos el merge para pegar la variable 'codmpio' de la base 'coddepto' a 'pobreza_monetaria'
 
-pobreza_monetaria = pobreza_monetaria.merge(coddepto[['Departamento', 'codmpio']], on='Departamento', how='left')
+pobreza_monetaria = pobreza_monetaria.merge(
+    coddepto[['Departamento', 'codmpio']], on='Departamento', how='left')
 
 # Borramos la columna 'Departamento', ya no la necesitamos
 
@@ -130,18 +138,20 @@ pobreza_monetaria = pobreza_monetaria.drop(columns=['Departamento'])
 
 # Cambiamos el nombre de la variable codmpio a 'coddepto'
 
-pobreza_monetaria = pobreza_monetaria.rename(columns={'codmpio': 'coddepto'})
+pobreza_monetaria = pobreza_monetaria.rename(
+    columns={'codmpio': 'coddepto', 'pobreza_monetaria': 'Pobreza_Monetaria'})
 
 # Paso 3. Cambiamos de wide a long
 
-pobreza_monetaria = pd.melt(pobreza_monetaria, id_vars=['coddepto'], var_name='anno', value_name='Pobreza_Monetaria')
+pobreza_monetaria = pd.melt(pobreza_monetaria, id_vars=[
+                            'coddepto'], var_name='anno', value_name='pobreza_monetaria')
 
 # Paso 4. Cambiamos el orden de las columnas
 
-pobreza_monetaria = pobreza_monetaria[['anno', 'coddepto', 'Pobreza_Monetaria']]
+pobreza_monetaria = pobreza_monetaria[[
+    'anno', 'coddepto', 'pobreza_monetaria']]
 
 # Paso 5. Exportamos la base
 
-pobreza_monetaria.to_excel(r'/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_7.2.xlsx', index=False)
-
-
+pobreza_monetaria.to_excel(
+    r'/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_7.2.xlsx', index=False)
