@@ -24,16 +24,16 @@ nacidos_vivos <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/V
 
 # Separamos el CODMPIO del Nombre del Municipio
 
-YA_1.9$codmpio <- str_replace(YA_1.9$codmpio, " - .*", "")
+YA_1.10$codmpio <- str_replace(YA_1.10$codmpio, " - .*", "")
 
 # Organizamos la Base de Datos, estos están en Wide, de manera que
 # los vamos a convertir a Longer.
 
-YA_1.9 <- YA_1.9 %>%
+YA_1.10 <- YA_1.10 %>%
   pivot_longer(
     cols = starts_with("20"), # Seleccionamos las columnas que empiezan con "20" (años desde 2000)
     names_to = "anno", # Nuevo nombre de columna para los nombres de las columnas originales
-    values_to = "mortalidad_desnutricion_5" # Nuevo nombre de columna para los valores
+    values_to = "partos_atendidos_calificado" # Nuevo nombre de columna para los valores
   )
 
 # ====================================================
@@ -42,50 +42,40 @@ YA_1.9 <- YA_1.9 %>%
 
 # Verificamos la Estructura de los Datos, por ejemplo
 
-class(YA_1.9$codmpio)
-class(YA_1.9$anno)
-class(YA_1.9$mortalidad_desnutricion_5) # Podemos hacerlo paara cada una de las variables
-class(total_menores_5$codmpio)
-class(total_menores_5$anno)
-class(total_menores_5$total_menores_5)
+class(YA_1.10$codmpio)
+class(YA_1.10$anno)
+class(YA_1.10$partos_atendidos_calificado) # Podemos hacerlo paara cada una de las variables
+class(nacidos_vivos$codmpio)
+class(nacidos_vivos$anno)
+class(nacidos_vivos$nacidos_vivos)
 
 # Cambiamos de String a Numeric
 
-YA_1.9 <- YA_1.9 %>%
+YA_1.10 <- YA_1.10 %>%
   mutate(codmpio = as.numeric(codmpio))
 
-YA_1.9 <- YA_1.9 %>%
+YA_1.10 <- YA_1.10 %>%
   mutate(anno = as.numeric(anno))
 
-total_menores_5 <- total_menores_5 %>%
+nacidos_vivos <- nacidos_vivos %>%
   mutate(codmpio = as.numeric(codmpio))
 
-total_menores_5 <- total_menores_5 %>%
+nacidos_vivos<- nacidos_vivos %>%
   mutate(anno = as.numeric(anno))
 
 
 # Realizamos el Inner Join * Cargamos el DataSet nacidos_vivos
 
-YA_1.9 <- inner_join(total_menores_5, YA_1.9, by = c("codmpio","anno"))
+YA_1.10 <- inner_join(nacidos_vivos, YA_1.10, by = c("codmpio","anno"))
 
-# Creamos la Tasa de Mortalidad por Desnutricion Aguda en Menores
+# Creamos el Porcentaje de Nacidos Vivos por Personal Calififado
 
-YA_1.9 <- YA_1.9 %>% 
-  mutate(tasa_mortalidad_desnutricion_5_años = (mortalidad_desnutricion_5 / total_menores_5)* 1000) # Esto es una tasa x 1000 nacidos vivos
+YA_1.10 <- YA_1.10 %>% 
+  mutate(porcentaje_nacidos_vivos_personal_calificado = (partos_atendidos_calificado /nacidos_vivos)* 100) # Esto es un porcentaje
 
-
-YA_1.9 <- YA_1.9 %>%
-  mutate(
-    # Calcular la tasa de mortalidad neonatal corregida
-    tasa_mortalidad_desnutricion_5_años = ifelse(
-      total_menores_5  > 0 & mortalidad_desnutricion_5 <= total_menores_5 ,  # Calcular tasa solo si total_menores_5 > 0 y mortalidad_neonatal <= total_menores_5 
-      (mortalidad_desnutricion_5 / total_menores_5 ) * 100000,        # Fórmula de la tasa por cada 100000
-      NA                                            # Asignar NA si no se cumple la condición
-    )
-  )
 
 # Exportamos la Versión Final de Nuestro Indicador
 
-write.xlsx(YA_1.9, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.9.xlsx", col_names = TRUE)
+write.xlsx(YA_1.10, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.10.xlsx", col_names = TRUE)
 
 # Fin del Código
