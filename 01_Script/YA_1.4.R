@@ -70,10 +70,9 @@ YA_1.4 <- inner_join(nacidos_vivos, YA_1.4, by = c("codmpio","anno"))
 YA_1.4 <- YA_1.4 %>% 
   mutate(proporcion_controles_prenatales = ( controles_prenatales / nacimientos)*100) 
 
-
 # Exportamos la Versión Final de Nuestro Indicador
 
-write.xlsx(YA_1.4_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.4.xlsx", col_names = TRUE)
+write.xlsx(YA_1.4, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.4.xlsx", col_names = TRUE)
 
 # Fin del Código
 

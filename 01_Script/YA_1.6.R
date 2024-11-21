@@ -20,6 +20,9 @@ library(stringr)
 
 YA_1.6 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_1.6.xlsx")
 
+nacidos_vivos <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/nacidos_vivos.xlsx")
+
+
 # Borramos la Variable Total General
 
 YA_1.6 <- YA_1.6[ , -21]
@@ -51,9 +54,6 @@ head(YA_1.6)
 class(YA_1.6$codmpio)
 class(YA_1.6$anno)
 class(YA_1.6$controles_prenatales) # Podemos hacerlo paara cada una de las variables
-class(VF_nacidos_vivos$codmpio)
-class(VF_nacidos_vivos$anno)
-class(VF_nacidos_vivos$nacidos_vivos)
 
 # Cambiamos de String a Numeric
 
@@ -65,17 +65,17 @@ YA_1.6 <- YA_1.6 %>%
 
 # Realizamos el Inner Join * Cargamos el DataSet nacidos_vivos
 
-YA_1.6_VF <- inner_join(VF_nacidos_vivos, YA_1.6, by = c("codmpio","anno"))
+YA_1.6 <- inner_join(nacidos_vivos, YA_1.6, by = c("codmpio","anno"))
 
 # Creamos la Tasa de mortalidad por Infección Respmortalidad_menores_5toria Aguda (mortalidad_menores_5) en menores de 5 años
 
-YA_1.6_VF <- YA_1.6_VF %>% 
-  mutate(bajo_peso_nacer = ( bajo_peso_nacer / nacidos_vivos)*100) 
+YA_1.6 <- YA_1.6 %>% 
+  mutate(bajo_peso_nacer = ( bajo_peso_nacer / nacimientos)*100) 
 
 
 # Exportamos la Versión Final de Nuestro Indicador
 
-write.xlsx(YA_1.6_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.6.xlsx", col_names = TRUE)
+write.xlsx(YA_1.6, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.6.xlsx", col_names = TRUE)
 
 # Fin del Código
 

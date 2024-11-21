@@ -17,7 +17,7 @@ library(stringr)
 
 YA_1.7 <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/neonatal.xlsx" )
 
-nacidos <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
+nacidos_vivos <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/nacidos_vivos.xlsx")
 
 
 # Vamos a limpiar el numerador 
@@ -82,9 +82,6 @@ nacidos <- nacidos %>%
 class(YA_1.7$codmpio)
 class(YA_1.7$anno)
 class(YA_1.7$mortalidad_menores_1_año) # Podemos hacerlo paara cada una de las variables
-class(nacidos$codmpio)
-class(nacidos$anno)
-class(nacidos$nacidos)
 
 # Cambiamos de String a Numeric
 
@@ -93,13 +90,6 @@ YA_1.7 <- YA_1.7 %>%
 
 YA_1.7 <- YA_1.7 %>%
   mutate(anno = as.numeric(anno))
-
-nacidos <- nacidos %>%
-  mutate(codmpio = as.numeric(codmpio))
-
-nacidos <- nacidos %>%
-  mutate(anno = as.numeric(anno))
-
 
 # Realizamos el Inner Join * Cargamos el DataSet nacidos_vivos
 
@@ -112,12 +102,11 @@ YA_1.7 <- YA_1.7 %>%
   mutate(
     # Calcular la tasa de mortalidad neonatal corregida
     tasa_mortalidad_neonatal= ifelse(
-      nacidos > 0 & mortalidad_neonatal <= nacidos,  # Calcular tasa solo si nacidos > 0 y mortalidad_neonatal <= nacidos
-      (mortalidad_neonatal / nacidos) * 1000,        # Fórmula de la tasa por cada 1000 nacidos
+      nacimientos > 0 & mortalidad_neonatal <= nacimientos,  # Calcular tasa solo si nacidos > 0 y mortalidad_neonatal <= nacidos
+      (mortalidad_neonatal / nacimientos) * 1000,        # Fórmula de la tasa por cada 1000 nacidos
       NA                                            # Asignar NA si no se cumple la condición
     )
   )
-
 
 
 write.xlsx(YA_1.7, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.7.xlsx", col_names = TRUE)
