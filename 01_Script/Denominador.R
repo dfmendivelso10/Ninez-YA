@@ -91,48 +91,21 @@ menores_5_2005_2019 <- menores_5_2005_2019 %>% select(4,5,96)
 menores_5_2020_2030 <- menores_5_2020_2030 %>% select(3,5,96)
 
 # ================================================
-# Sección: Menores de 1 Año
-# ================================================
-
-# Vamos a crear una Nueva Variable llamada total_menores_5, esta variable suma la población de 0 a 4 años-
-# 7 y 11 son los números de las columnas que corresponden desde Total_0 ... Total_4. 
-
-menores_1_2005_2019 <- menores_2005_2019  %>% 
-  mutate(total_menores_1 = rowSums(menores_2005_2019[ , c(7)]))
-
-menores_1_2020_2030 <- menores_2020_2030  %>% 
-  mutate(total_menores_1 = rowSums(menores_2020_2030[ , c(7)]))
-
-## Vamos a construir nuestra Base Final filtrando las variables que solo necesitamos, dada la base que tenemos:
-# La Variable 4 = "MPIO" el identificador del Municipio para la Base menores_5_2005_2019
-# La Variable 3 = "MPIO" el identificador del Municipio para la Base menores_5_2020_2030
-# La Variable 5 = "AÑO" el año
-# La Variable 96 = "total_menores_18" la variable que creamos
-
-menores_1_2005_2019 <- menores_1_2005_2019 %>% select(4,5,96)
-
-menores_1_2020_2030 <- menores_1_2020_2030 %>% select(3,5,96)
-
-# ================================================
 # Sección: Append de las Bases de Datos
 # ================================================
 
 
 # Combinar los data frames usando dplyr
 
-menores_1_años <- bind_rows(menores_1_2005_2019, menores_1_2020_2030)
 menores_5_años <- bind_rows(menores_5_2005_2019, menores_5_2020_2030)
 menores_18_años <- bind_rows(menores_18_2005_2019, menores_18_2020_2030)
 
 # Ajustamos Nombre
 
-menores_1_años <- menores_1_años %>% rename(codmpio = MPIO, anno = AÑO)
 menores_5_años <- menores_5_años %>% rename(codmpio = MPIO, anno = AÑO)
 menores_18_años <- menores_18_años %>% rename(codmpio = MPIO, anno = AÑO)
 
 ## Exportamos los Archivos
-
-write.xlsx(menores_1_años,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_1_años.xlsx", col_names = TRUE)
 
 write.xlsx(menores_5_años,"/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_5_años.xlsx", col_names = TRUE)
 

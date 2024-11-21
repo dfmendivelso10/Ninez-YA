@@ -15,10 +15,11 @@ library(readxl)
 library(stringr)
 
 
-
-# Cargamos Nuestra Base YA_1.4
+# Cargamos Nuestras Bases de Datos
 
 YA_1.4 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_1.4.xlsx")
+
+nacidos_vivos <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/nacidos_vivos.xlsx")
 
 # Borramos la Variable Total General
 
@@ -46,14 +47,11 @@ head(YA_1.4)
 # Sección: Merge Data  
 # ====================================================
 
-# Verificamos la Estructura de los Datos, por ejemplo
+# Verificamos la Estructura de los Datos
 
 class(YA_1.4$codmpio)
 class(YA_1.4$anno)
 class(YA_1.4$controles_prenatales) # Podemos hacerlo paara cada una de las variables
-class(VF_nacidos_vivos$codmpio)
-class(VF_nacidos_vivos$anno)
-class(VF_nacidos_vivos$nacidos_vivos)
 
 # Cambiamos de String a Numeric
 
@@ -65,12 +63,12 @@ YA_1.4 <- YA_1.4 %>%
 
 # Realizamos el Inner Join * Cargamos el DataSet nacidos_vivos
 
-YA_1.4_VF <- inner_join(VF_nacidos_vivos, YA_1.4, by = c("codmpio","anno"))
+YA_1.4 <- inner_join(nacidos_vivos, YA_1.4, by = c("codmpio","anno"))
 
 # Creamos la Tasa de mortalidad por Infección Respmortalidad_menores_5toria Aguda (mortalidad_menores_5) en menores de 5 años
 
-YA_1.4_VF <- YA_1.4_VF %>% 
-  mutate(proporcion_controles_prenatales = ( controles_prenatales / nacidos_vivos)*100) 
+YA_1.4 <- YA_1.4 %>% 
+  mutate(proporcion_controles_prenatales = ( controles_prenatales / nacimientos)*100) 
 
 
 # Exportamos la Versión Final de Nuestro Indicador
