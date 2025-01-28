@@ -84,8 +84,46 @@ YA_1.9 <- YA_1.9 %>%
     )
   )
 
+
+# Renombrar las columnas usando los nombres correctos
+YA_1.9 <- YA_1.9 %>%
+  rename(numerador = mortalidad_desnutricion_5, 
+         denominador = total_menores_5) %>%
+  select(1, 2, 4, 3, 5)
+
+
+# Crear el data frame con la estructura deseada
+metadatados <- data.frame(
+  Variables = c("codmpio", "anno", "denominador", "numerador", "tasa_mortalidad_desnutricion_5_años"),
+  Descripción = c("Código del municipio", "Año", "Denominador", "Numerador", "Valor calculado"),
+  Fuente = c("….", "", "", "", ""),
+  Fecha_de_extracción = c("…", "", "", "", "")
+)
+
+# Guardar el data frame en un archivo Excel
+write_xlsx(metadatados, "metadatados.xlsx")
+
 # Exportamos la Versión Final de Nuestro Indicador
 
 write.xlsx(YA_1.9, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.9.xlsx", col_names = TRUE)
+
+
+# Crear un nuevo workbook
+wb <- createWorkbook()
+
+# Añadir hojas al workbook
+addWorksheet(wb, "YA_1.9")
+addWorksheet(wb, "metadatados")
+
+# Guardar ambos data frames en un solo archivo Excel con dos hojas
+write.xlsx(
+  list(
+    YA_1.9 = YA_1.9, 
+    metadatados = metadatados
+  ), 
+  file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.9_metadatados.xlsx", 
+  colNames = TRUE, 
+  overwrite = TRUE
+)
 
 # Fin del Código
