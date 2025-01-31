@@ -1,82 +1,46 @@
-
-
-# ================================================
+# ============================================================
 # YA 1.6 Proporción de nacidos vivos con Bajo Peso al Nacer
-# ================================================
-# Librerías y Paquetes
+# ============================================================
 
+# Librerías necesarias
 install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr"))
 
-
-library(tidyr)
 library(dplyr)
 library(openxlsx)
 library(readxl)
+library(tidyr)
 library(stringr)
 
+# Cargar bases de datos
+YA_1.6 <- read_excel("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/YA_1.6.xlsx")
+nacidos_vivos <- read_excel("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/nacidos_vivos.xlsx")
 
+# Limpieza de datos
+YA_1.6 <- YA_1.6[, -21] %>%
+  mutate(codmpio = str_replace(codmpio, " - .*", "")) %>%
+  pivot_longer(cols = starts_with("20"), names_to = "anno", values_to = "bajo_peso_nacer") %>%
+  mutate(codmpio = as.numeric(codmpio), anno = as.numeric(anno))
 
-# Cargamos Nuestra Base YA_1.6
+# Merge de datos
+YA_1.6 <- inner_join(nacidos_vivos, YA_1.6, by = c("codmpio", "anno")) %>%
+  mutate(proporcion_bajo_peso_nacer = (bajo_peso_nacer / nacimientos) * 100) %>%
+  rename(numerador = bajo_peso_nacer, denominador = nacimientos) %>%
+  select(codmpio, anno, denominador, numerador, proporcion_bajo_peso_nacer)
 
-YA_1.6 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_1.6.xlsx")
+# Crear metadatos
+metadatados <- data.frame(
+  Variables = c("codmpio", "anno", "denominador", "numerador", "proporcion_bajo_peso_nacer"),
+  Descripción = c("Código del municipio", "Año", "Denominador", "Numerador", "Proporción calculada"),
+  Fuente = rep("…", 5),
+  Fecha_de_extracción = rep("…", 5)
+)
 
-nacidos_vivos <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/nacidos_vivos.xlsx")
+# Crear y guardar workbook con dos hojas
+wb <- createWorkbook()
+addWorksheet(wb, "YA_1.6")
+addWorksheet(wb, "metadatados")
+write.xlsx(list(YA_1.6 = YA_1.6, metadatados = metadatados),
+           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.6_metadatados.xlsx", 
+           colNames = TRUE, overwrite = TRUE)
 
-
-# Borramos la Variable Total General
-
-YA_1.6 <- YA_1.6[ , -21]
-
-# Separamos el CODMPIO del Nombre del Municipio
-
-YA_1.6$codmpio <- str_replace(YA_1.6$codmpio, " - .*", "")
-
-# Organizamos la Base de Datos, estos están en Wide, de manera que
-# los vamos a convertir a Longer.
-
-YA_1.6 <- YA_1.6 %>%
-  pivot_longer(
-    cols = starts_with("20"), # Seleccionamos las columnas que empiezan con "20" (años desde 2000)
-    names_to = "anno", # Nuevo nombre de columna para los nombres de las columnas originales
-    values_to = "bajo_peso_nacer" # Nuevo nombre de columna para los valores
-  )
-
-# Podemos validar el formato Long
-
-head(YA_1.6)
-
-# ====================================================
-# Sección: Merge Data  
-# ====================================================
-
-# Verificamos la Estructura de los Datos, por ejemplo
-
-class(YA_1.6$codmpio)
-class(YA_1.6$anno)
-class(YA_1.6$controles_prenatales) # Podemos hacerlo paara cada una de las variables
-
-# Cambiamos de String a Numeric
-
-YA_1.6 <- YA_1.6 %>%
-  mutate(codmpio = as.numeric(codmpio))
-
-YA_1.6 <- YA_1.6 %>%
-  mutate(anno = as.numeric(anno))
-
-# Realizamos el Inner Join * Cargamos el DataSet nacidos_vivos
-
-YA_1.6 <- inner_join(nacidos_vivos, YA_1.6, by = c("codmpio","anno"))
-
-# Creamos la Tasa de mortalidad por Infección Respmortalidad_menores_5toria Aguda (mortalidad_menores_5) en menores de 5 años
-
-YA_1.6 <- YA_1.6 %>% 
-  mutate(bajo_peso_nacer = ( bajo_peso_nacer / nacimientos)*100) 
-
-
-# Exportamos la Versión Final de Nuestro Indicador
-
-write.xlsx(YA_1.6, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.6.xlsx", col_names = TRUE)
-
-# Fin del Código
-
-
+# Fin del código
