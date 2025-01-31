@@ -1,82 +1,54 @@
+# ============================================================
+# YA 1.3 Mortalidad en niños menores de 5 años
+# ============================================================
 
-
-# ================================================
-# YA 1.3 Mortalidad en niños menores de 5 años 
-# ================================================
-# Librerías y Paquetes
-
+# Librerías necesarias
 install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr"))
 
-
-library(tidyr)
 library(dplyr)
 library(openxlsx)
 library(readxl)
+library(tidyr)
 library(stringr)
 
+# Cargar bases de datos
+YA_1.3 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/YA_1.3.xlsx")
+total_menores_5 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/menores_5_años.xlsx")
 
-
-# Cargamos Nuestra Base YA_1.3
-
-YA_1.3 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_1.3.xlsx")
-
-# Borramos la Variable Total General
-
-YA_1.3 <- YA_1.3[ , -21]
-
-# Separamos el CODMPIO del Nombre del Municipio
-
-YA_1.3$codmpio <- str_replace(YA_1.3$codmpio, " - .*", "")
-
-# Organizamos la Base de Datos, estos están en Wide, de manera que
-# los vamos a convertir a Longer.
-
+# Limpieza de datos
 YA_1.3 <- YA_1.3 %>%
-  pivot_longer(
-    cols = starts_with("20"), # Seleccionamos las columnas que empiezan con "20" (años desde 2000)
-    names_to = "anno", # Nuevo nombre de columna para los nombres de las columnas originales
-    values_to = "mortalidad_menores_5" # Nuevo nombre de columna para los valores
-  )
+  mutate(codmpio = str_replace(as.character(codmpio), " - .*", "")) %>%
+  pivot_longer(cols = starts_with("20"), names_to = "anno", values_to = "mortalidad_menores_5") %>%
+  mutate(codmpio = as.character(codmpio), anno = as.numeric(anno))
 
-# Podemos validar el formato Long
+total_menores_5 <- total_menores_5 %>%
+  mutate(codmpio = as.character(codmpio), anno = as.numeric(anno))
 
-head(YA_1.3)
+# Merge de datos
+YA_1.3_VF <- inner_join(total_menores_5, YA_1.3, by = c("codmpio", "anno")) %>%
+  mutate(tasa_mortalidad_menores_5 = ifelse(
+    total_menores_5 > 0 & mortalidad_menores_5 <= total_menores_5,
+    (mortalidad_menores_5 / total_menores_5) * 100000,
+    NA
+  )) %>%
+  rename(numerador = mortalidad_menores_5, denominador = total_menores_5) %>%
+  select(codmpio, anno, denominador, numerador, tasa_mortalidad_menores_5)
 
-# ====================================================
-# Sección: Merge Data  
-# ====================================================
+# Crear metadatos
+metadatados <- data.frame(
+  Variables = c("codmpio", "anno", "denominador", "numerador", "tasa_mortalidad_menores_5"),
+  Descripción = c("Código del municipio", "Año", "Denominador", "Numerador", "Valor calculado"),
+  Fuente = rep("…", 5),
+  Fecha_de_extracción = rep("…", 5)
+)
 
-# Verificamos la Estructura de los Datos, por ejemplo
-
-class(YA_1.3$codmpio)
-class(YA_1.3$anno)
-class(YA_1.3$mortalidad_menores_5) # Podemos hacerlo paara cada una de las variables
-class(menores_5_años$codmpio)
-class(menores_5_años$anno)
-class(menores_5_años$total_menores_5)
-
-# Cambiamos de String a Numeric
-
-YA_1.3 <- YA_1.3 %>%
-  mutate(codmpio = as.numeric(codmpio))
-
-YA_1.3 <- YA_1.3 %>%
-  mutate(anno = as.numeric(anno))
-
-# Realizamos el Inner Join * Cargamos el DataSet menores_5_años
-
-YA_1.3_VF <- inner_join(menores_5_años, YA_1.3, by = c("codmpio","anno"))
-
-# Creamos la Tasa de mortalidad por cualquier condición
-
-YA_1.3_VF <- YA_1.3_VF %>% 
-  mutate(tasa_mortalidad_menores_5 = (mortalidad_menores_5 / total_menores_5) * 1000)
+# Crear y guardar workbook con dos hojas
+wb <- createWorkbook()
+addWorksheet(wb, "YA_1.3")
+addWorksheet(wb, "metadatados")
+write.xlsx(list(YA_1.3 = YA_1.3_VF, metadatados = metadatados),
+           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.3_metadatados.xlsx", 
+           colNames = TRUE, overwrite = TRUE)
 
 
-# Exportamos la Versión Final de Nuestro Indicador
-
-write.xlsx(YA_1.3_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.3.xlsx", col_names = TRUE)
-
-# Fin del Código
-
-
+# Fin del código
