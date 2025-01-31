@@ -21,7 +21,7 @@ nacidos_vivos <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data
 
 # Borramos la Variable Total General
 
-nacidos_vivos <- nacidos_vivos[ , -21]
+nacidos_vivos <- nacidos_vivos[ , -22]
 
 # Separamos el CODMPIO del Nombre del Municipio
 
