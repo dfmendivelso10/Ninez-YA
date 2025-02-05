@@ -1,52 +1,44 @@
-
-
 # ================================================
-# YA 1.5 Tasa de Mortalidad por Desnutricion Aguda en Menores 5 años
+# YA 1.5 Tasa de Mortalidad por Desnutrición Aguda en Menores de 5 años
 # ================================================
-# Librerías y Paquetes
 
-install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr"))
+# Instalar y cargar librerías necesarias
+if (!requireNamespace("openxlsx", quietly = TRUE)) install.packages("openxlsx")
+if (!requireNamespace("dplyr", quietly = TRUE)) install.packages("dplyr")
+if (!requireNamespace("readxl", quietly = TRUE)) install.packages("readxl")
+if (!requireNamespace("tidyr", quietly = TRUE)) install.packages("tidyr")
+if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
 
-
-library(tidyr)
 library(dplyr)
 library(openxlsx)
 library(readxl)
+library(tidyr)
 library(stringr)
 
+# Función para limpiar valores numéricos eliminando "," y "."
+limpiar_numeros <- function(x) {
+  x <- gsub("[,.]", "", as.character(x))  # Remueve comas y puntos
+  as.numeric(x)  # Convierte a numérico
+}
 
-# Cargar los datos
-YA_1.5 <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/YA_1.5.xlsx")
-
-menores_5_años <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/menores_5_años.xlsx")
+# Cargar bases de datos
+YA_1.5 <- read_excel("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/YA_1.5.xlsx")
+menores_5_años <- read_excel("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/menores_5_años.xlsx")
 
 # Eliminar la columna 'Total General' (suponiendo que es la columna 21)
 YA_1.5 <- YA_1.5[, -21]
 
-# Separar el 'codmpio' del nombre del municipio
-YA_1.5$codmpio <- str_replace(YA_1.5$codmpio, " - .*", "")
-
-# Convertir la base de datos de formato ancho a formato largo
+# Limpieza de datos
 YA_1.5 <- YA_1.5 %>%
+  mutate(
+    codmpio = str_replace(as.character(codmpio), " - .*", ""),
+    across(starts_with("20"), limpiar_numeros)  # Aplica limpieza a columnas numéricas
+  ) %>%
   pivot_longer(
-    cols = starts_with("20"), # Selecciona las columnas que empiezan con "20" (años)
-    names_to = "anno", # Nombre de la nueva columna para los años
-    values_to = "desnutricion_menores_5" # Nombre de la nueva columna para los valores
-  )
-
-# Validar el formato largo
-head(YA_1.5)
-
-# ====================================================
-# Sección: Unir Datos  
-# ====================================================
-
-# Verificar la estructura de los datos para asegurar compatibilidad en la unión
-str(YA_1.5)
-str(menores_5_años)
-
-# Convertir 'codmpio' y 'anno' a tipo numérico para asegurar que coincidan en ambas bases
-YA_1.5 <- YA_1.5 %>%
+    cols = starts_with("20"), 
+    names_to = "anno", 
+    values_to = "desnutricion_menores_5"
+  ) %>%
   mutate(
     codmpio = as.numeric(codmpio),
     anno = as.numeric(anno)
@@ -55,23 +47,31 @@ YA_1.5 <- YA_1.5 %>%
 menores_5_años <- menores_5_años %>%
   mutate(
     codmpio = as.numeric(codmpio),
-    anno = as.numeric(anno)
+    anno = as.numeric(anno),
+    total_menores_5 = limpiar_numeros(total_menores_5)  # Limpieza de valores numéricos
   )
 
-# Realizar el inner join para unir las bases de datos
-YA_1.5_VF <- inner_join(menores_5_años, YA_1.5, by = c("codmpio", "anno"))
+# Unir bases de datos
+YA_1.5_VF <- inner_join(menores_5_años, YA_1.5, by = c("codmpio", "anno")) %>%
+  mutate(tasa_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5) * 100000) %>%
+  rename(numerador = desnutricion_menores_5, denominador = total_menores_5) %>%
+  select(codmpio, anno, denominador, numerador, tasa_desnutricion_menores_5)
 
-# Crear la tasa de mortalidad por desnutrición aguda en menores de 5 años
-YA_1.5_VF <- YA_1.5_VF %>% 
-  mutate(tasa_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5) * 100000)
+# Crear metadatos
+metadatados <- data.frame(
+  Variables = c("codmpio", "anno", "denominador", "numerador", "tasa_desnutricion_menores_5"),
+  Descripción = c("Código del municipio", "Año", "Total menores de 5 años", 
+                  "Muertes por desnutrición aguda", "Tasa de mortalidad por desnutrición"),
+  Fuente = rep("…", 5),
+  Fecha_de_extracción = rep(Sys.Date(), 5)
+)
 
-# Mostrar los primeros registros para validar
-head(YA_1.5_VF)
+# Guardar datos en Excel sin necesidad de createWorkbook()
+write.xlsx(list(YA_1.5 = YA_1.5_VF, metadatados = metadatados),
+           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.5_metadatados.xlsx", 
+           colNames = TRUE, overwrite = TRUE)
 
-# Exportamos la Versión Final de Nuestro Indicador
-
-write.xlsx(YA_1.5_VF, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.5.xlsx", col_names = TRUE)
+# Exportamos la versión final del indicador
+write.xlsx(YA_1.5_VF, "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.5.xlsx", colNames = TRUE)
 
 # Fin del Código
-
-
