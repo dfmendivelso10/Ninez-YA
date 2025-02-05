@@ -1,5 +1,5 @@
 # ============================================================
-# YA 2  Porcentaje de niños y niñas en servicios de educación inicial con 6 o más atenciones
+# YA 2  2.6 - Niñas y niños con educación inicial en el marco de la atención integral
 # ============================================================
 
 # Instalar y cargar librerías necesarias
@@ -28,28 +28,31 @@ educ_inicial <- educ_inicial %>%
   rename(codmpio = COD_DANE_MUNICIPIO)
 
 # ====================================================================================================
-# YA 2.5 - Porcentaje de niños y niñas en servicios de educación inicial con 6 o más atenciones
+# YA 2.6 - Niñas y niños con educación inicial en el marco de la atención integral
 # ====================================================================================================
 
-YA_2.5 <- educ_inicial %>%
-  select(anno, codmpio, INDICADOR.4..CONCURRENCIA.DE.ATENCIONES) %>%
-  rename(porcentaje_marco_integral = INDICADOR.4..CONCURRENCIA.DE.ATENCIONES)
+YA_2.6 <- educ_inicial %>%
+  select(anno, codmpio, INDICADOR.3..TOTAL.EDUCACIÓN.INICIAL.ICBF...MEN) %>%
+  rename(ninos_educacion_inicial_integral = INDICADOR.3..TOTAL.EDUCACIÓN.INICIAL.ICBF...MEN)
 
-# Convertir porcentaje de texto a numérico eliminando el símbolo "%"
-YA_2.5 <- YA_2.5 %>%
-  mutate(porcentaje_marco_integral = as.numeric(str_replace(porcentaje_marco_integral, "%", "")))
+# Convertir valores a numérico asegurando limpieza de caracteres no deseados
+YA_2.6 <- YA_2.6 %>%
+  mutate(ninos_educacion_inicial_integral = as.numeric(str_replace_all(ninos_educacion_inicial_integral, "[,.]", "")))
 
-# Crear metadatos
-metadatos_2.5 <- data.frame(
-  Variables = c("anno", "codmpio", "porcentaje_marco_integral"),
-  Descripción = c("Año", "Código del municipio", "Porcentaje de niños con 6 o más atenciones priorizadas"),
+# Crear metadatos para YA 2.6
+metadatos_2.6 <- data.frame(
+  Variables = c("anno", "codmpio", "ninos_educacion_inicial_integral"),
+  Descripción = c("Año", "Código del municipio", "Total de niñas y niños con educación inicial en el marco de la atención integral"),
   Fuente = rep("…", 3),
   Fecha_de_extracción = rep(Sys.Date(), 3)
 )
 
+# ====================================================================================================
 # Exportar datos con metadatos
-write.xlsx(list(YA_2.5 = YA_2.5, metadatos = metadatos_2.5),
-           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_2.5.xlsx",
+# ====================================================================================================
+
+write.xlsx(list(YA_2.6 = YA_2.6, metadatos = metadatos_2.6),
+           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_2.6.xlsx",
            colNames = TRUE, overwrite = TRUE)
 
 # Fin del Código

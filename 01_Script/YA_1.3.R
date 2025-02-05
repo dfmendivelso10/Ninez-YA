@@ -45,7 +45,7 @@ total_menores_5 <- total_menores_5 %>%
 YA_1.3_VF <- inner_join(total_menores_5, YA_1.3, by = c("codmpio", "anno")) %>%
   mutate(tasa_mortalidad_menores_5 = ifelse(
     total_menores_5 > 0 & mortalidad_menores_5 <= total_menores_5,
-    (mortalidad_menores_5 / total_menores_5) * 100000,
+    (mortalidad_menores_5 / total_menores_5) * 1000,
     NA
   )) %>%
   rename(numerador = mortalidad_menores_5, denominador = total_menores_5) %>%
