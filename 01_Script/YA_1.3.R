@@ -60,8 +60,8 @@ metadatados <- data.frame(
 )
 
 # Guardar datos en Excel sin necesidad de createWorkbook()
-write.xlsx(list(YA_1.3 = YA_1.3_VF, metadatados = metadatados),
-           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.3_metadatados.xlsx", 
+write.xlsx(list(datos = YA_1.3_VF, metadatados = metadatados),
+           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.3.xlsx", 
            colNames = TRUE, overwrite = TRUE)
 
 # Fin del código
