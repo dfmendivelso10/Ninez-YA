@@ -2,98 +2,91 @@
 # YA 1.7 Tasa de Mortalidad Neonatal
 # ============================================================
 
-# Librerías y Paquetes
+# Instalar y cargar librerías necesarias
+if (!requireNamespace("openxlsx", quietly = TRUE)) install.packages("openxlsx")
+if (!requireNamespace("dplyr", quietly = TRUE)) install.packages("dplyr")
+if (!requireNamespace("readxl", quietly = TRUE)) install.packages("readxl")
+if (!requireNamespace("tidyr", quietly = TRUE)) install.packages("tidyr")
+if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
 
-install.packages(c("dplyr", "openxlsx", "readxl", "tidyr", "stringr", "lubridate"))
-
-
-library(tidyr)
 library(dplyr)
 library(openxlsx)
 library(readxl)
+library(tidyr)
 library(stringr)
 
-# Vamos a Cargar las Bases de Datos
+# Función para limpiar valores numéricos eliminando "," y "."
+limpiar_numeros <- function(x) {
+  x <- gsub("[,.]", "", as.character(x))  # Remueve comas y puntos
+  as.numeric(x)  # Convierte a numérico
+}
 
-YA_1.7 <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/neonatal.xlsx" )
+# Cargar bases de datos
+YA_1.7 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/neonatal.xlsx")
+nacidos_vivos <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/nacidos_vivos.xlsx")
 
-nacidos_vivos <- read.xlsx("/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/nacidos_vivos.xlsx")
+# Eliminar la columna 'Total General' (suponiendo que es la columna 21)
+YA_1.7 <- YA_1.7[, -21]
 
-
-# Vamos a limpiar el numerador 
-
-# Borramos la Variable Total General
-
-YA_1.7 <- YA_1.7[ , -21]
-
-# Separamos el CODMPIO del Nombre del Municipio
-
-YA_1.7$codmpio <- str_replace(YA_1.7$codmpio, " - .*", "")
-
-# Organizamos la Base de Datos, estos están en Wide, de manera que
-# los vamos a convertir a Longer.
-
-YA_1.7 <- YA_1.7 %>%
-  pivot_longer(
-    cols = starts_with("20"), # Seleccionamos las columnas que empiezan con "20" (años desde 2000)
-    names_to = "anno", # Nuevo nombre de columna para los nombres de las columnas originales
-    values_to = "mortalidad_neonatal" # Nuevo nombre de columna para los valores
-  )
-
-
-# Borramos Total General de YA_1.7
-
-YA_1.7 <- YA_1.7 %>%
-  filter(codmpio != "Total general")
-
-
-# ====================================================
-# Sección: Merge Data  
-# ====================================================
-
-# Verificamos la Estructura de los Datos, por ejemplo
-
-class(YA_1.7$codmpio)
-class(YA_1.7$anno)
-class(YA_1.7$mortalidad_neonatal) # Podemos hacerlo paara cada una de las variables
-
-# Cambiamos de String a Numeric
-
-YA_1.7 <- YA_1.7 %>%
-  mutate(codmpio = as.numeric(codmpio))
-
-YA_1.7 <- YA_1.7 %>%
-  mutate(anno = as.numeric(anno))
-
-# Realizamos el Inner Join * Cargamos el DataSet nacidos_vivos
-
-YA_1.7 <- inner_join(nacidos_vivos, YA_1.7, by = c("codmpio","anno"))
-
-# Creamos la Tasa de Mortalidad por Desnutricion Aguda en Menores
-
-# Crear una nueva variable 'tasa_mortalidad_neonatal_corregida' sin alterar las variables originales
-
-
-# Limpiar y recalcular la tasa de mortalidad neonatal
-
+# Limpieza de datos
 YA_1.7 <- YA_1.7 %>%
   mutate(
-    # Regla 1: Si nacimientos > 0 y mortalidad_neonatal <= nacimientos, calcular la tasa
+    codmpio = str_replace(as.character(codmpio), " - .*", ""),
+    across(starts_with("20"), limpiar_numeros)  # Aplica limpieza a columnas numéricas
+  ) %>%
+  pivot_longer(
+    cols = starts_with("20"), 
+    names_to = "anno", 
+    values_to = "mortalidad_neonatal"
+  ) %>%
+  filter(codmpio != "Total general") %>%
+  mutate(
+    codmpio = as.numeric(codmpio),
+    anno = as.numeric(anno)
+  )
+
+nacidos_vivos <- nacidos_vivos %>%
+  mutate(
+    codmpio = as.numeric(codmpio),
+    anno = as.numeric(anno),
+    nacimientos = limpiar_numeros(nacimientos)  # Limpieza de valores numéricos
+  )
+
+# Unir bases de datos
+YA_1.7 <- inner_join(nacidos_vivos, YA_1.7, by = c("codmpio", "anno"))
+
+# Calcular la tasa de mortalidad neonatal corregida
+YA_1.7 <- YA_1.7 %>%
+  mutate(
     tasa_mortalidad_neonatal = ifelse(
       nacimientos > 0 & mortalidad_neonatal <= nacimientos,
       (mortalidad_neonatal / nacimientos) * 1000,
-      NA_real_  # Si no cumple la regla, asignar NA
+      NA_real_
     ),
-    # Regla 2: Invalidar tasas iguales a 1000 cuando mortalidad_neonatal / nacimientos = 1
-    tasa_mortalidad_neonatal_corregida = ifelse(
+    tasa_mortalidad_neonatal = ifelse(
       mortalidad_neonatal == nacimientos & nacimientos == 1,
-      NA_real_,  # Asignar NA para casos donde mortalidad_neonatal = nacimientos = 1
-      tasa_mortalidad_neonatal_corregida
+      NA_real_,
+      tasa_mortalidad_neonatal
     )
-  )
+  ) %>%
+  rename(numerador = mortalidad_neonatal, denominador = nacimientos) %>%
+  select(codmpio, anno, denominador, numerador, tasa_mortalidad_neonatal)
 
-# Mostrar los datos procesados
+# Crear metadatos
+metadatados <- data.frame(
+  Variables = c("codmpio", "anno", "denominador", "numerador", "tasa_mortalidad_neonatal"),
+  Descripción = c("Código del municipio", "Año", "Nacimientos", "Muertes neonatales", 
+                  "Tasa de mortalidad neonatal por 1,000 nacidos vivos"),
+  Fuente = rep("…", 5),
+  Fecha_de_extracción = rep(Sys.Date(), 5)
+)
 
-write.xlsx(YA_1.7, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/YA_1.7.xlsx", col_names = TRUE)
+# Guardar datos en Excel sin necesidad de createWorkbook()
+write.xlsx(list(YA_1.7 = YA_1.7, metadatados = metadatados),
+           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.7_metadatados.xlsx", 
+           colNames = TRUE, overwrite = TRUE)
+
+# Exportamos la versión final del indicador
+write.xlsx(YA_1.7, "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.7.xlsx", colNames = TRUE)
 
 # Fin del Código
