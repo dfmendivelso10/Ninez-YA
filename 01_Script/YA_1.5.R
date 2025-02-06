@@ -1,5 +1,5 @@
 # ================================================
-# YA 1.5 Tasa de Mortalidad por Desnutrición Aguda en Menores de 5 años
+# YA 1.5 Prevalencia de desnutrición aguda en niños menores de cinco años 
 # ================================================
 
 # Instalar y cargar librerías necesarias
@@ -24,9 +24,6 @@ limpiar_numeros <- function(x) {
 # Cargar bases de datos
 YA_1.5 <- read_excel("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/YA_1.5.xlsx")
 menores_5_años <- read_excel("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/menores_5_años.xlsx")
-
-# Eliminar la columna 'Total General' (suponiendo que es la columna 21)
-YA_1.5 <- YA_1.5[, -21]
 
 # Limpieza de datos
 YA_1.5 <- YA_1.5 %>%
@@ -53,25 +50,22 @@ menores_5_años <- menores_5_años %>%
 
 # Unir bases de datos
 YA_1.5_VF <- inner_join(menores_5_años, YA_1.5, by = c("codmpio", "anno")) %>%
-  mutate(tasa_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5) * 1000) %>%
+  mutate(proporcion_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5) * 100) %>%
   rename(numerador = desnutricion_menores_5, denominador = total_menores_5) %>%
-  select(codmpio, anno, denominador, numerador, tasa_desnutricion_menores_5)
+  select(codmpio, anno, denominador, numerador, proporcion_desnutricion_menores_5)
 
 # Crear metadatos
 metadatados <- data.frame(
-  Variables = c("codmpio", "anno", "denominador", "numerador", "tasa_desnutricion_menores_5"),
+  Variables = c("codmpio", "anno", "denominador", "numerador", "proporcion_desnutricion_menores_5"),
   Descripción = c("Código del municipio", "Año", "Total menores de 5 años", 
-                  "Muertes por desnutrición aguda", "Tasa de mortalidad por desnutrición"),
+                  "Muertes por desnutrición aguda", "proporcion de mortalidad por desnutrición"),
   Fuente = rep("…", 5),
   Fecha_de_extracción = rep(Sys.Date(), 5)
 )
 
 # Guardar datos en Excel sin necesidad de createWorkbook()
 write.xlsx(list(datos = YA_1.5_VF, metadatados = metadatados),
-           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.5_metadatados.xlsx", 
+           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.5.xlsx", 
            colNames = TRUE, overwrite = TRUE)
-
-# Exportamos la versión final del indicador
-write.xlsx(YA_1.5_VF, "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.5.xlsx", colNames = TRUE)
 
 # Fin del Código

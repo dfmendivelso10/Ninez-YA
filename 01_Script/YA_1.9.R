@@ -22,7 +22,7 @@ limpiar_numeros <- function(x) {
 }
 
 # Cargar bases de datos
-YA_1.9 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/desnutricion_menores_5.xlsx")
+YA_1.9 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/mortalidad_desnutricion_menores_5.xlsx")
 total_menores_5 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/menores_5_años.xlsx")
 
 # Limpieza de datos
@@ -66,11 +66,8 @@ metadatados <- data.frame(
 )
 
 # Guardar datos en Excel sin necesidad de createWorkbook()
-write.xlsx(list(YA_1.9 = YA_1.9, metadatados = metadatados),
-           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.9_metadatados.xlsx", 
+write.xlsx(list(datos = YA_1.9, metadatados = metadatados),
+           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.9.xlsx", 
            colNames = TRUE, overwrite = TRUE)
-
-# Exportamos la versión final del indicador
-write.xlsx(YA_1.9, "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.9.xlsx", colNames = TRUE)
 
 # Fin del Código

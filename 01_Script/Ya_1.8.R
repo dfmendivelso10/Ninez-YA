@@ -87,11 +87,8 @@ metadatados <- data.frame(
 )
 
 # Guardar datos en Excel sin necesidad de createWorkbook()
-write.xlsx(list(YA_1.8 = YA_1.8, metadatados = metadatados),
-           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.8_metadatados.xlsx", 
+write.xlsx(list(datos = YA_1.8, metadatados = metadatados),
+           file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.8.xlsx", 
            colNames = TRUE, overwrite = TRUE)
-
-# Exportamos la versión final del indicador
-write.xlsx(YA_1.8, "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.8.xlsx", colNames = TRUE)
 
 # Fin del Código

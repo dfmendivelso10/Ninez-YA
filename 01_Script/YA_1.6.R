@@ -46,11 +46,8 @@ metadatados <- data.frame(
 )
 
 # Guardar resultados en un archivo Excel
-ruta_output <- file.path(ruta_proc, "YA_1.6_metadatados.xlsx")
-write.xlsx(list(YA_1.6 = YA_1.6, metadatados = metadatados), 
+ruta_output <- file.path(ruta_proc, "YA_1.6.xlsx")
+write.xlsx(list(datos = YA_1.6, metadatados = metadatados), 
            file = ruta_output, colNames = TRUE, overwrite = TRUE)
-
-# Exportar versión final del indicador
-write.xlsx(YA_1.6, file.path(ruta_proc, "YA_1.6.xlsx"), colNames = TRUE)
 
 # Fin del código
