@@ -53,7 +53,7 @@ menores_5_años <- menores_5_años %>%
 
 # Unir bases de datos
 YA_1.5_VF <- inner_join(menores_5_años, YA_1.5, by = c("codmpio", "anno")) %>%
-  mutate(tasa_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5) * 100000) %>%
+  mutate(tasa_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5) * 1000) %>%
   rename(numerador = desnutricion_menores_5, denominador = total_menores_5) %>%
   select(codmpio, anno, denominador, numerador, tasa_desnutricion_menores_5)
 
@@ -67,7 +67,7 @@ metadatados <- data.frame(
 )
 
 # Guardar datos en Excel sin necesidad de createWorkbook()
-write.xlsx(list(YA_1.5 = YA_1.5_VF, metadatados = metadatados),
+write.xlsx(list(datos = YA_1.5_VF, metadatados = metadatados),
            file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_1.5_metadatados.xlsx", 
            colNames = TRUE, overwrite = TRUE)
 
