@@ -22,7 +22,7 @@ limpiar_numeros <- function(x) {
 }
 
 # Cargar bases de datos
-YA_1.9 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/mortalidad_desnutricion_menores_5.xlsx")
+YA_1.9 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/YA_1.9.xlsx")
 total_menores_5 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/menores_5_años.xlsx")
 
 # Limpieza de datos
