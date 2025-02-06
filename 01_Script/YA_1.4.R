@@ -41,10 +41,13 @@ nacidos_vivos <- nacidos_vivos %>%
     nacimientos = limpiar_numeros(nacimientos)  # Limpieza de valores numéricos
   )
 
-# Merge de datos
+# Merge de datos con condicional
 YA_1.4 <- inner_join(nacidos_vivos, YA_1.4, by = c("codmpio", "anno")) %>%
-  mutate(proporcion_controles_prenatales = (controles_prenatales / nacimientos) * 100) %>%
-  rename(numerador = controles_prenatales, denominador = nacimientos) %>%
+  mutate(
+    proporcion_controles_prenatales = ifelse(controles_prenatales > nacimientos, NA, (controles_prenatales / nacimientos) * 100),
+    numerador = controles_prenatales,
+    denominador = nacimientos
+  ) %>%
   select(codmpio, anno, denominador, numerador, proporcion_controles_prenatales)
 
 # Crear metadatos
