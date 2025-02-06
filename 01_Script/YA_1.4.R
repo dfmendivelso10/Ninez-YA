@@ -26,7 +26,7 @@ YA_1.4 <- read_excel("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW
 nacidos_vivos <- read_excel("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/nacidos_vivos.xlsx")
 
 # Limpieza de datos
-YA_1.4 <- YA_1.4[, -21] %>%
+YA_1.4 <- YA_1.4[, -22] %>%
   mutate(
     codmpio = str_replace(as.character(codmpio), " - .*", ""),
     across(starts_with("20"), limpiar_numeros)  # Aplica limpieza a columnas numéricas
