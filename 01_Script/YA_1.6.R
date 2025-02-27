@@ -24,7 +24,7 @@ YA_1.6 <- read_excel(ruta_raw)
 nacidos_vivos <- read_excel(file.path(ruta_proc, "nacidos_vivos.xlsx"))
 
 # Limpieza de datos
-YA_1.6 <- YA_1.6[, -21] %>%  # Eliminar columna 21 innecesaria
+YA_1.6 <- YA_1.6[, -22] %>%  # Eliminar columna 22 innecesaria porque es el Total
   mutate(
     codmpio = str_replace(as.character(codmpio), " - .*", ""),  # Limpiar códigos municipales
     across(starts_with("20"), limpiar_numeros)  # Aplicar limpieza a columnas numéricas

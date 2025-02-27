@@ -17,7 +17,7 @@ library(stringr)
 
 # Cargamos el Data-Set
 
-nacidos_vivos <- read_excel("/Users/daniel/Documents/GitHub/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
+nacidos_vivos <- read_excel("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
 
 # Borramos la Variable Total General
 
@@ -55,6 +55,6 @@ nacidos_vivos <- nacidos_vivos %>%
 
 # Exportamos la Versión Final de Nuestro Denominador Nacimientos
 
-write.xlsx(nacidos_vivos, "/Users/daniel/Documents/GitHub/Ninez-YA/03_Process/nacidos_vivos.xlsx", col_names = TRUE)
+write.xlsx(nacidos_vivos, "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/nacidos_vivos.xlsx", col_names = TRUE)
 
 
