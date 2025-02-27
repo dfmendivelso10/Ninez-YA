@@ -48,7 +48,7 @@ metadatos_2.5 <- data.frame(
 )
 
 # Exportar datos con metadatos
-write.xlsx(list(YA_2.5 = YA_2.5, metadatos = metadatos_2.5),
+write.xlsx(list(datos = YA_2.5, metadatos = metadatos_2.5),
            file = "C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/YA_2.5.xlsx",
            colNames = TRUE, overwrite = TRUE)
 
