@@ -23,44 +23,42 @@ limpiar_numeros <- function(x) {
 
 # Cargar bases de datos
 YA_1.10 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/tipo_nacimiento.xlsx")
-nacidos_vivos <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/VF_nacidos_vivos.xlsx")
+nacidos_vivos <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/03_Process/nacidos_vivos.xlsx")
 
-# Limpieza de datos
+# Limpieza de datos en YA_1.10
 YA_1.10 <- YA_1.10 %>%
   mutate(
-    codmpio = str_replace(as.character(codmpio), " - .*", ""),
-    across(starts_with("20"), limpiar_numeros)  # Aplica limpieza a columnas numéricas
+    codmpio = str_replace(as.character(codmpio), " - .*", ""),  # Extraer solo el código municipal
+    codmpio = as.numeric(codmpio)  # Convertir código municipal a numérico
   ) %>%
   pivot_longer(
-    cols = starts_with("20"), 
+    cols = -codmpio,  # Convertir años en formato largo
     names_to = "anno", 
     values_to = "partos_atendidos_calificado"
   ) %>%
   mutate(
-    codmpio = as.numeric(codmpio),
-    anno = as.numeric(anno)
+    anno = as.numeric(anno),  # Convertir año a numérico
+    partos_atendidos_calificado = limpiar_numeros(partos_atendidos_calificado)  # Limpieza de valores
   )
 
+# Limpieza de datos en nacidos_vivos
 nacidos_vivos <- nacidos_vivos %>%
   mutate(
     codmpio = as.numeric(codmpio),
     anno = as.numeric(anno),
-    nacidos_vivos = limpiar_numeros(nacidos_vivos)  # Limpieza de valores numéricos
+    nacimientos = limpiar_numeros(nacimientos)  # Limpieza de valores numéricos
   )
 
-# Unir bases de datos
-YA_1.10 <- inner_join(nacidos_vivos, YA_1.10, by = c("codmpio", "anno"))
-
-# Calcular el porcentaje de partos atendidos por personal calificado
-YA_1.10 <- YA_1.10 %>% 
+# Unir bases de datos y calcular la proporción
+YA_1.10 <- inner_join(nacidos_vivos, YA_1.10, by = c("codmpio", "anno")) %>%
   mutate(
     porcentaje_nacidos_vivos_personal_calificado = ifelse(
-      nacidos_vivos > 0 & partos_atendidos_calificado <= nacidos_vivos,
-      (partos_atendidos_calificado / nacidos_vivos) * 100,
+      nacimientos > 0 & partos_atendidos_calificado <= nacimientos,
+      (partos_atendidos_calificado / nacimientos) * 100,
       NA_real_
     )
   ) %>%
-  rename(numerador = partos_atendidos_calificado, denominador = nacidos_vivos) %>%
+  rename(numerador = partos_atendidos_calificado, denominador = nacimientos) %>%
   select(codmpio, anno, denominador, numerador, porcentaje_nacidos_vivos_personal_calificado)
 
 # Crear metadatos

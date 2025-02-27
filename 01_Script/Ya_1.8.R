@@ -25,9 +25,6 @@ limpiar_numeros <- function(x) {
 YA_1.8 <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/menores_1_año.xlsx")
 nacidos <- read.xlsx("C:/Users/enflujo.ARTE-EUFRB00792/Documents/Ninez-YA/02_RAW-Data/nacidos_vivos.xlsx")
 
-# Eliminar la columna 'Total General' (suponiendo que es la columna 21)
-YA_1.8 <- YA_1.8[, -21]
-nacidos <- nacidos[, -21]
 
 # Limpieza de datos
 YA_1.8 <- YA_1.8 %>%

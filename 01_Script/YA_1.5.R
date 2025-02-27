@@ -48,9 +48,15 @@ menores_5_años <- menores_5_años %>%
     total_menores_5 = limpiar_numeros(total_menores_5)  # Limpieza de valores numéricos
   )
 
-# Unir bases de datos
+# Unir bases de datos y calcular la proporción con condicional
 YA_1.5_VF <- inner_join(menores_5_años, YA_1.5, by = c("codmpio", "anno")) %>%
-  mutate(proporcion_desnutricion_menores_5 = (desnutricion_menores_5 / total_menores_5) * 100) %>%
+  mutate(
+    proporcion_desnutricion_menores_5 = ifelse(
+      desnutricion_menores_5 > total_menores_5, 
+      NA,  # Si el numerador es mayor que el denominador, asigna NA
+      (desnutricion_menores_5 / total_menores_5) * 100
+    )
+  ) %>%
   rename(numerador = desnutricion_menores_5, denominador = total_menores_5) %>%
   select(codmpio, anno, denominador, numerador, proporcion_desnutricion_menores_5)
 
