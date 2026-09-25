@@ -1,1 +1,9 @@
+# R session files
 .RData
+.Rhistory
+.Rproj.user/
+
+# Editor and OS files
+.vscode/
+.DS_Store
+.ipynb_checkpoints/
