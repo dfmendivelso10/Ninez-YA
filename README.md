@@ -9,7 +9,8 @@ Code and data used to build the childhood and adolescence indicators behind **SI
 | `01_Script/` | R and Python scripts. Scripts are named after the dashboard indicator they cover (`YA_x.y`). |
 | `02_RAW-Data/` | Source data from public administrative records and surveys (census projections, ICBF, MEN, Procuraduría, ECV, vital statistics). |
 | `03_Process/` | Intermediate datasets, such as population denominators by age group. |
-| `04_Outputs/` | Final indicator tables. |
+
+Final indicator tables are not stored in this repository; the scripts write them to a local `04_Outputs/` folder.
 
 ## Running the code
 
